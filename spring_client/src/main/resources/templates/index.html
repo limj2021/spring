@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>这是首页</title>
+    <!--使用了thymeleaf模板-->
+    <!-- Bootstrap 的 js 文件 -->
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!--导入js-->
+    <script th:src="@{/js/jquery-3.6.0.js}"></script>
+</head>
+<!---->
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="10">
+
+<!--侧边栏,外边不能有盒子-->
+<div style="width: 300px;" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="offcanvasScrolling" aria-labelledby="offcanvasScrollingLabel">
+    <div class="offcanvas-header">
+        <h5 class="offcanvas-title" id="offcanvasScrollingLabel">侧边栏菜单</h5>
+        <!--按钮，用来关闭侧边栏的-->
+        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <!--自动锁定页面位置-->
+        <div class="col-4">
+            <img class="m-2" width="200" height="200" th:src="@{/img/forum/收款码.jpg}"/>
+            <div id="list-example" class="list-group">
+                <a style="width: 250px;" class="list-group-item list-group-item-action" href="#list-item-1">公告</a>
+                <a style="width: 250px;" class="list-group-item list-group-item-action" href="#list-item-2">信息栏</a>
+                <a style="width: 250px;" class="list-group-item list-group-item-action" href="#list-item-3">发表评论</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container-fluid p-4 bg-dark">
+    <!--第一部分-->
+    <div class="row bg-light text-dark m-3">
+        <!--有几个缩写,t,b,l,r,x,y含义分别是top,bottom,left,right,left和right-->
+        <!--m,p的含义分别是margin外边距,padding内边距-->
+        <!--左边框-->
+        <div class="col-sm-2 col-md-3 col-lg-3 col-xl-3 p-3 bg-light text-white">
+            <!--列表-->
+            <div class="container">
+                <div class="list-group list-group-flush">
+                    <a class="list-group-item list-group-item-primary list-group-item-action" data-bs-toggle="offcanvas" data-bs-target="#offcanvasScrolling" aria-controls="offcanvasScrolling">
+                        <!--链接，用来打开侧边栏的-->
+                        打开菜单
+                    </a>
+                    <a class="list-group-item list-group-item-primary list-group-item-action" th:href="@{/filetwo/download}">
+                        下载论坛文件
+                    </a>
+
+<!--                    <a th:href="@{/skip/tanchukuang}" class="list-group-item list-group-item-dark list-group-item-action">-->
+<!--                        测试-->
+<!--                    </a>-->
+                    <span th:if="${not #strings.isEmpty(announcementone)}">
+<!--                        只有公告有值的时候才显示-->
+                    <div class="list-group-item list-group-item-dark list-group-item-action" type="button" data-bs-toggle="modal" data-bs-target="#lookAnnouncementModal">
+                        查看公告内容
+                    </div>
+                        <!-- 模态框 -->
+                    <div class="modal fade" id="lookAnnouncementModal">
+<!--                        大号滚动-->
+                        <div class="modal-dialog modal-lg modal-dialog-scrollable">
+                            <div class="modal-content text-muted row bg-secondary p-1">
+                                <div class="bg-light">
+                                    <!-- 模态框头部 -->
+                                    <div class="modal-header alert alert-success row">
+                                        <div class="col-7 offset-1">
+                                            <h4 class="modal-title offset-1">来自系统管理员发布的最新公告</h4>
+                                        </div>
+                                        <div class="col-3 offset-1">
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+
+
+                                    </div>
+                                    <!-- 模态框内容 -->
+                                    <div class="modal-body">
+                                        <div class="mx-auto" style="width:150px">
+                                            <h3 ><span class="mx-auto" th:text="${announcementone.getAnnouncement().getTitle()}"></span></h3>
+                                        </div>
+                                        <p>&nbsp;&nbsp;&nbsp;&nbsp;你好，<span sec:authentication="name"></span>先生</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;请认真听以下内容</p>
+                    <p>&nbsp;&nbsp;&nbsp;&nbsp;<span th:text="${announcementone.getAnnouncement().getContent()}"></span></p>
+                    <p class="col-4 offset-6">发布人：<span th:text="${announcementone.getUsername()}"></span></p>
+                    发布时间是：<span th:text="${announcementone.getAnnouncement().getTime()}"></span>
+                </div>
+                <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <button type="button" class="btn-danger" data-bs-dismiss="modal">我已知晓</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+                    </span>
+
+
+
+                    <!--                    有ROLE_ADMIN的权限则显示-->
+                    <span sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a th:href="@{/skip/userManagement}" class="list-group-item list-group-item-dark list-group-item-action">
+                        管理数据库信息
+                    </a>
+
+                        <!--                    <a th:href="@{/skip/upload}" class="list-group-item list-group-item-dark list-group-item-action">-->
+                        <!--                        测试-->
+                        <!--                    </a>-->
+
+                    <div class="list-group-item list-group-item-dark list-group-item-action" type="button" data-bs-toggle="modal" data-bs-target="#announcementModal">
+                        发布公告
+                    </div>
+                        <!-- 模态框 -->
+<div class="modal" id="announcementModal">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content text-muted bg-secondary p-1">
+        <form th:action="@{/Announcement/add}" method="post">
+            <div class="bg-light">
+            <!-- 模态框头部 -->
+                <div class="modal-header alert alert-success">
+                    <h4 class="offset-4 modal-title ">请管理员发布公告</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <!-- 模态框内容 -->
+                <div class="modal-body">
+                    <div class="row col-10 offset-1 mt-2 mb-2">
+                        <div class="col-8">
+                            公告标题:<input name="announcementTitle" style="width: 300px" type="text">
+                        </div>
+                        <p>请说明公告内容</p>
+                    </div>
+                    <!--textarea-bug,前后标签必须贴在一起，不能跨行，不然会出现空格，字数设置为200-->
+                    <textarea name="announcementContent" maxlength="200" class="col-10 offset-1" placeholder="输入发布内容" style="height: 140px"></textarea>
+                </div>
+            <!-- 模态框底部 -->
+                <div class="modal-footer">
+                    <div class="col-8 offset-2">
+                        <button class="btn btn-outline-primary col-3" data-bs-dismiss="modal" type="submit">发布</button>
+                        <button type="button" class="btn btn-danger col-3" data-bs-dismiss="modal">关闭</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+  </div>
+</div>
+
+
+                    </span>
+                    <span sec:authorize="hasRole('ROLE_USER')">
+                    <a th:href="@{/trade/all}" class="list-group-item list-group-item-dark list-group-item-action">
+                        物品交易
+                    </a>
+
+                     <div class="list-group-item list-group-item-dark list-group-item-action" type="button" data-bs-toggle="modal" data-bs-target="#emailModal">
+                        论坛问题反馈
+                    </div>
+                        <!-- 模态框 -->
+                    <form th:action="@{/email/admin}" method="post" enctype="multipart/form-data">
+                        <div class="modal" id="emailModal">
+                            <!--设置模态框为大模态框-->
+                            <div class="modal-dialog modal-lg">
+                                <div class="modal-content">
+                                    <!-- 模态框头部 -->
+                                    <div class="modal-header bg-success">
+                                        <div  class="row">
+                                            <img class="col-2" th:src="@{/img/forum/待发布.svg}" alt="Bootstrap" width="36" height="36">
+                                            <h4 class="col-8 modal-title">问题反馈</h4>
+                                        </div>
+
+                                    </div>
+
+                                    <!-- 模态框内容 -->
+                                    <div class="modal-body">
+                                        <div class="row col-10 offset-1 mt-2 mb-2">
+                                            <div class="col-8 text-dark">
+                                                问题概要<input class="" name="emailtitle" style="width: 300px" type="text">
+                                            </div>
+                                        </div>
+                                        <div class="row col-10 offset-1 mt-2 mb-2">
+                                            <div class="col-8 text-dark">
+                                                文件上传：
+                                                <!--                                                隐藏，方便传输-->
+                                                <input value="" id="img3" name="BASE64str" type="hidden">
+                                                <input id="input-file" class="upload" type="file" name="emailfile" value="">
+                                            </div>
+                                        </div>
+                                        <!--textarea-bug,前后标签必须贴在一起，不能跨行，不然会出现空格，字数设置为200-->
+                                        <textarea name="emailcontent" maxlength="200" class="col-10 offset-1" placeholder="输入反馈内容" style="height: 80px"></textarea>
+                                    </div>
+
+                                    <!-- 模态框底部 -->
+                                    <div class="modal-footer">
+                                        <div class="col-8 offset-2">
+                                            <button class="btn btn-outline-primary col-3" data-bs-dismiss="modal" type="submit">发布</button>
+                                            <button type="button" class="btn btn-danger col-3" data-bs-dismiss="modal">关闭</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                    </span>
+                    <a th:href="@{/skip/login}" class="list-group-item list-group-item-dark list-group-item-action">
+                        回到登录页面
+                    </a>
+
+
+                </div>
+            </div>
+        </div>
+        <!--轮播图-->
+        <div class="col-sm-8 col-md-6 col-lg-6 col-xl-6 p-3 bg-light text-white">
+            <!-- Carousel -->
+            <div id="demo" class="carousel slide" data-bs-ride="carousel">
+                <!--按钮-->
+                <!-- Indicators/dots -->
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#demo" data-bs-slide-to="0" class="active"></button>
+                    <button type="button" data-bs-target="#demo" data-bs-slide-to="1"></button>
+                    <button type="button" data-bs-target="#demo" data-bs-slide-to="2"></button>
+                </div>
+                <!-- The slideshow/carousel -->
+                <!--图片-->
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="https://static.runoob.com/images/mix/img_fjords_wide.jpg" class="d-block" style="width:100%">
+                        <div class="carousel-caption">
+                            <h3>山川与水</h3>
+                            <p>暂无描述</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://static.runoob.com/images/mix/img_nature_wide.jpg" class="d-block" style="width:100%">
+                        <div class="carousel-caption">
+                            <h3>大山深处</h3>
+                            <p>暂无描述</p>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <img src="https://static.runoob.com/images/mix/img_mountains_wide.jpg" class="d-block" style="width:100%">
+                        <div class="carousel-caption">
+                            <h3>半山腰上 </h3>
+                            <p>暂无描述</p>
+                        </div>
+                    </div>
+                </div>
+                <!---左右滑动-->
+                <!-- Left and right controls/icons -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#demo" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#demo" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+            </div>
+        </div>
+        <!--个人信息框-->
+        <div class="col-sm-2 col-md-3 col-lg-3 col-xl-3 p-3 bg-light text-dark">
+            <div class="col-md-4 offset-md-4 col-sm-4 offset-sm-4">
+                <img th:src="@{/img/forum/name.png}" class="img-fluid" alt="Chania"/>
+            </div>
+            <div class="container m-3 ">
+                <p class="col-6 offset-3 small">姓名：[[${session.loginUser}]]<span sec:authentication="name"></span></p>
+            </div>
+            <!--            <div class="container col-10 offset-1">
+                            <ul class="list-group list-group-horizontal">
+                                <li class="list-group-item">金币</li>
+                                <li class="list-group-item">状态</li>
+                                <li class="list-group-item">财富值</li>
+                            </ul>
+                        </div>-->
+            <div  class="container m-3 ">
+                <p>地点：广州</p>
+            </div>
+            <div class="row p-2">
+                <!--                <div class="col-2 offset-2">
+                                    <img th:src="@{/img/forum/发帖.svg}" alt="Bootstrap" width="32" height="32">
+                                    <label class="small">发帖</label>
+                                </div>-->
+                <div class="col-4 ">
+                    <img th:src="@{/img/forum/任务进程.svg}" alt="Bootstrap" width="32" height="32">
+                    <a role="button" th:href="@{/forum/myusertaskall}" class="small font-weight-light btn">我的任务</a>
+                </div>
+                <div class="col-4 ">
+                    <img th:src="@{/img/forum/任务进程.svg}" alt="Bootstrap" width="32" height="32">
+                    <a role="button" th:href="@{/forum/publisherusertaskall}"  class="small font-weight-light btn">我发布的任务</a>
+                </div>
+                <!--                <div class="col-2 ">
+                                    <img th:src="@{/img/forum/签到.svg}" alt="Bootstrap" width="32" height="32">
+                                    <p class="small">签到</p>
+                                </div>-->
+                <div class="col-4">
+                    <form th:action="@{/logout}" method="post">
+                        <img th:src="@{/img/forum/注销.svg}" alt="Bootstrap" width="32" height="32">
+                        <input class="small btn btn-outline-light text-dark" type="submit" value="注销">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!--第二部分-->
+    <div class="row bg-light text-dark m-3">
+        <!--有几个缩写,t,b,l,r,x,y含义分别是top,bottom,left,right,left和right,top和bottom-->
+        <!--m,p的含义分别是margin外边距,padding内边距-->
+        <!--左边框-->
+        <div class="col-sm-5 col-md-5 col-lg-4 col-xl-4 p-3 bg-light text-dark">
+            <!--            <h1>没有内容</h1>-->
+            <div class="container" width="100%">
+                <h3>友情链接</h3>
+                <a th:href="@{https://www.baidu.com/}" class="card">
+                    <div class="card-body">百度</div>
+                </a>
+                <br>
+                <a th:href="@{https://bbs.csdn.net/}" class="card bg-primary text-white">
+                    <div class="card-body">CSDN</div>
+                </a>
+                <br>
+                <div th:href="@{https://www.bilibili.com/}" class="card bg-success text-white">
+                    <div class="card-body">B站</div>
+                </div>
+                <br>
+                <div th:href="@{https://www.runoob.com/}" class="card bg-warning text-white">
+                    <div class="card-body">菜鸟教程</div>
+                </div>
+                <br>
+                <div th:href="@{https://spring.io/}" class="card bg-dark text-white">
+                    <div class="card-body">spring文档</div>
+                </div>
+                <br>
+                <div th:href="@{https://v3.bootcss.com/}" class="card bg-light text-dark">
+                    <div class="card-body">bootstrap文档</div>
+                </div>
+            </div>
+        </div>
+        <!--右边框-->
+        <div class="col-sm-7 col-md-7 col-lg-8 col-xl-8 p-1 bg-light text-white">
+            <div class="col-11">
+                <div data-bs-spy="scroll" data-bs-target="#list-example" data-bs-offset="0" class="scrollspy-example" tabindex="0">
+                    <div class="bg-light text-dark">
+<!--                        <h4 id="list-item-1">公告</h4>-->
+                        <p>
+                            <!--放置前三的公告-->
+<!--                            暂时没有广告-->
+                        </p>
+                    </div>
+                    <div class="bg-light text-dark">
+                        <h3 id="list-item-2 text-warning">招聘发布信息处</h3>
+                    </div>
+                    <div class="bg-dark p-1">
+                        <!--container 很重要-->
+                        <div style="overflow:scroll; width:100%; height:400px;" class="container border bg-dark text-dark text-white">
+                            <!--改用表单,用表单失败，改用列表组-->
+                            <!---开启列表循环-->
+                            <div th:each="list:${forumlist.getContent()}" class="list-group bg-light text-dark mt-4" style="width:100%;">
+                                <div class="list-group-item list-group-item-action">
+                                    <div class="row m-2 text-success">
+                                        <div class="col-2">
+                                            编号:<span th:text="${list.getId()}"/>
+                                        </div>
+                                        <div class="col-4 offset-2">
+                                            发布人:<span th:text="${list.getPublisher()}"/>
+                                        </div>
+                                        <div class="col-4">
+                                            <!--时间:-->
+                                            <span style="font-size:12px" th:text="${list.getTime()}"/>
+                                        </div>
+                                    </div>
+                                    <div class="row m-2 text-muted">
+                                        <div class="col-8 offset-2">
+                                            标题:<span th:text="${list.getTitle()}"/>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-10 offset-1">
+                                            内容:<span th:text="${list.getContent()}"/>
+                                        </div>
+                                    </div>
+                                    <div class="row m-2">
+                                        <div class="col-4" style="font-size:12px">
+                                            工资<span style="font-size:12px" th:text="${list.getSalary()}"/>
+                                        </div>
+                                        <div class="col-4" style="font-size:12px">
+                                            工作时长：朝<span th:text="${list.getWorkingOneHours()}"/>
+                                            — 晚<span style="font-size:12px" th:text="${list.getWorkingTwoHours()}"/>
+                                        </div>
+                                        <div class="col-4" style="font-size:12px">
+                                            工作地点<span style="font-size:12px" th:text="${list.getAddress()}"/>
+                                        </div>
+                                    </div>
+                                    <div class="row m-2">
+                                        <div class="col-5 text-info" style="font-size:12px">
+                                            联系电话<span th:text="${list.getPhoneNumber()}"/>
+                                        </div>
+                                        <div class="col-5 offset-2 text-danger" style="font-size:12px">
+<!--                                        发布中-->
+                                            <span th:if="${list.getUserTaskone().getState()}==1">
+                                                <a th:href="@{/forum/updateUserTask(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-success btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            我发布的-->
+                                            <span th:if="${list.getUserTaskone().getState()}==2">
+                                                <a role="button" class="btn btn-outline-warning btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            被领取-->
+                                            <span th:if="${list.getUserTaskone().getState()}==3">
+                                                <a role="button" class="btn btn-outline-secondary btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            已领取-->
+                                            <span th:if="${list.getUserTaskone().getState()}==4">
+                                                <a role="button" class="btn btn-outline-primary btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            执行中-->
+                                            <span th:if="${list.getUserTaskone().getState()}==5">
+                                                <a th:href="@{/forum/updateUserTasktwo(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-info btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            已完成-->
+                                            <span th:if="${list.getUserTaskone().getState()}==6">
+                                                <a role="button" class="btn btn-outline-dark btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            删除任务-->
+                                            <span th:if="${list.getUserTaskone().getState()}==7">
+                                                <a th:href="@{/forum/updateUserTaskdelete(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-danger btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                            <!--                                            异常情况-->
+                                            <span th:if="${list.getUserTaskone().getState()}==8">
+                                                <a role="button" class="btn btn-outline-light btn-sm text-dark" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!--分页器-->
+                            <div class="container mt-3">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item"><a th:href="@{/skip/forum(page=1)}" class="page-link">首页</a></li>
+                                    <li class="page-item"><a th:href="@{/skip/forum(page=${forumlist.getPageNum()-1})}" class="page-link">上一页</a></li>
+                                    <li class="page-item active"><a th:text="'第'+(${forumlist.getPageNum()})+'页'" class="page-link"><!--当前页--></a></li>
+                                    <li class="page-item"><a th:href="@{/skip/forum(page=${forumlist.getPageNum()+1})}" class="page-link">下一页</a></li>
+
+                                    <li class="page-item"><a th:href="@{/skip/forum(page=${forumlist.getTotalPages()})}" class="page-link">尾页</a></li>
+                                    <li class="page-item"><a th:text="'共'+(${forumlist.getTotalPages()})+'页'"  class="page-link"></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <!--评论-->
+                    <div class="bg-light text-dark">
+                        <h4 id="list-item-3">发布任务</h4>
+                        <div class="col-8 offset-2">
+                            <div class="container mt-3">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">
+                                    发布任务
+                                </button>
+                            </div>
+                            <!-- 模态框 -->
+                            <form th:action="@{/forum/add}" method="post">
+                                <div class="modal" id="myModal">
+                                    <!--设置模态框为大模态框-->
+                                    <div class="modal-dialog modal-lg">
+                                        <div class="modal-content">
+                                            <!-- 模态框头部 -->
+                                            <div class="modal-header bg-success">
+                                                <img class="col-1" th:src="@{/img/forum/待发布.svg}" alt="Bootstrap" width="36" height="36">
+                                                <h4 class="col-3 modal-title">发布内容</h4>
+                                                <img class="col-2" th:src="@{/img/forum/时间.svg}" alt="Bootstrap" width="32" height="32">
+                                                <div class="col-5" style="color:greenyellow" id="time"></div>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            </div>
+
+                                            <!-- 模态框内容 -->
+                                            <div class="modal-body">
+                                                <div class="row col-10 offset-1 mt-2 mb-2">
+                                                    <div class="col-8">
+                                                        标题:<input class="" name="title" style="width: 300px" type="text">
+                                                    </div>
+                                                </div>
+                                                <!--textarea-bug,前后标签必须贴在一起，不能跨行，不然会出现空格，字数设置为200-->
+                                                <textarea name="content" maxlength="200" class="col-10 offset-1" placeholder="输入发布内容" style="height: 80px"></textarea>
+                                                <!--上下外边距-->
+                                                <div class="row col-10 offset-1 mt-2 mb-2">
+                                                    <div class="col-3">
+                                                        工资:<input onkeyup="value=value.replace(/[^\d]/g,'')" class="" name="salary" style="width: 80px" type="text">/月
+                                                    </div>
+                                                    <div class="col-5">
+                                                        工作时长:朝<input class="" name="workingOneHours" style="width: 40px" type="text">
+                                                        —晚
+                                                        <input class="" name="workingTwoHours" style="width: 40px" type="text">
+                                                    </div>
+                                                    <div class="col-4">
+                                                        地点:<input class="" name="address" style="width: 150px" type="text">
+                                                    </div>
+
+                                                </div>
+                                                <!--上下外边距-->
+                                                <div class="row col-10 offset-1 mt-2 mb-2">
+                                                    <div class="col-8">
+                                                        <!--手机正则验证，集中焦点时，触发，失去焦点时触发，最大字数11，手机正则验证,只能输入数字-->
+                                                        联系电话:<input class="" maxlength="11" onkeyup="value=value.replace(/[^\d]/g,'')" id="phoneNumber" name="phoneNumber" style="width: 120px" type="text">
+                                                        <span class="" style="color:#f0f0f0;display:none;" id="tip">
+                                                            请输入有效的手机号码
+                                                        </span>
+                                                    </div>
+                                                    <div class="col-4">
+                                                        <!--session会话得到数据-->
+                                                        发布人
+                                                        <!--<span th:value="${sec:authentication='name'}" name="publisher"/>-->
+                                                        <span sec:authentication="name"></span>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                            <!-- 模态框底部 -->
+                                            <div class="modal-footer">
+                                                <div class="col-8 offset-2">
+                                                    <button class="btn btn-outline-primary col-3" data-bs-dismiss="modal" type="submit">发布</button>
+                                                    <button type="button" class="btn btn-danger col-3" data-bs-dismiss="modal">关闭</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!--第三部分-->
+    <div class="row bg-light text-dark m-3">
+        <!--有几个缩写,t,b,l,r,x,y含义分别是top,bottom,left,right,left和right,top和bottom-->
+        <!--m,p的含义分别是margin外边距,padding内边距-->
+        <!--左边-->
+        <div class="col-sm-2 col-md-3 col-lg-3 col-xl-3 p-3 bg-light text-white">
+            目前内容为空白
+        </div>
+        <!--中间-->
+        <div class="col-sm-8 col-md-6 col-lg-6 col-xl-6 p-3 bg-light text-white">
+
+        </div>
+        <!--右边-->
+        <div class="col-sm-2 col-md-3 col-lg-3 col-xl-3 p-3 bg-light text-white">
+
+        </div>
+
+    </div>
+
+
+
+</div>
+
+<script type="text/javascript">
+
+    //三秒执行一次文件
+    // $(function(){setInterval(setInterval('alert("Hello");', 3000);});
+    // $(function(){ setInterval(function(){ alert("Hello"); }, 3000);});
+    // 弹出模态框
+    // $(function(){$('#myModal').modal('show')});
+
+    // 页面加载，自动打开模态框
+    // $(function(){
+    //     $('#lookAnnouncementModal').modal('show')
+    //     setInterval(
+    //         // 一天执行一次
+    //         function(){$('#lookAnnouncementModal').modal('show')}, 3600000);
+    //
+    //     // var modalToggle = document.getElementById('myModal') // relatedTarget
+    //     // myModal.show(modalToggle)
+    //     // var myModal = new bootstrap.Modal(document.getElementById('myModal'), options)
+    // });
+    //网页加载完毕后立刻执行的操作
+    window.onload = function() {
+
+        //增加手机正则验证，类型为onblur，失去焦点时，触发事件
+        //获取电话的值
+        var phoneNumber = document.getElementById("phoneNumber");
+        //获得提示信息的值
+        var tip = document.getElementById("tip");
+        //手机号正则表达式
+        var preg = /^1[3456789][0-9]{9}$/
+        //获得焦点时，显示
+        phoneNumber.onfocus = function() {
+            tip.style.display = "block";
+            tip.style.color="#ff0000";
+        }
+        //失去焦点时，手机验证
+        phoneNumber.onblur = function() {
+            var phoneVal = this.value;
+            //当电话不是11位或者不是数字时，改变数值phoneVal.length == 11 && isNaN(phoneVal) == false&&
+            if (preg.test(phoneVal)) {
+                tip.innerHTML = "输入正确";
+                tip.style.display = "none";//隐藏
+            } else if(phoneVal.length==0){
+                tip.innerHTML = "请输入电话号码";
+                tip.style.display = "none";//隐藏
+            } else {
+                tip.innerHTML = "输入的手机号不正确";
+            }
+        }
+    }
+
+    //加载时间(未使用标签)
+    function time() {
+        var vWeek, vWeek_s, vDay;
+        vWeek = ["星期天", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+        var date =  new Date();
+        year = date.getFullYear();
+        month = date.getMonth() + 1;
+        day = date.getDate();
+        hours = date.getHours();
+        minutes = date.getMinutes();
+        seconds = date.getSeconds();
+        vWeek_s = date.getDay();
+        document.getElementById("time").innerHTML = year + "年" + month + "月" + day + "日" + "\t" + hours + ":" + minutes + ":" + seconds + "\t" + vWeek[vWeek_s];
+    };
+    setInterval("time()", 1000);
+
+
+    //注意是将图片变成base64位
+    $(function(){
+        $('.upload').change(function(){
+            var oFReader = new FileReader();
+            var file = document.getElementById('input-file').files[0];
+            oFReader.readAsDataURL(file);
+            oFReader.onloadend = function(oFRevent){
+                var src = oFRevent.target.result;
+                $('img').attr('src',src);
+                $('#img1').attr('value',oFReader);
+                $('#img2').attr('value',file);
+                $('#img3').attr('value',src);
+            }
+        })
+    })
+</script>
+
+
+</body>
+</html>

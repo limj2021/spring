@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
+    <!--    这里的意思是，如果有谷歌内核，默认使用谷歌内核-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    <title>单文件上传</title>
+</head>
+<body>
+
+单文件上传upload
+<form method="post" th:action="@{/upload}" enctype="multipart/form-data">
+    <input type="file" name="file"><br>
+    <input type="submit" value="提交">
+</form>
+
+多文件上传uploadFiles
+<form method="post" th:action="@{/uploadFiles}" enctype="multipart/form-data">
+    <input type="file" name="file"><br>
+    <input type="file" name="file"><br>
+    <input type="file" name="file"><br>
+    <input type="submit" value="提交">
+</form>
+
+多文件上传multiUpload
+<form method="post" th:action="@{/multiUpload}" enctype="multipart/form-data">
+    <input type="file" name="file"><br>
+    <input type="file" name="file"><br>
+    <input type="file" name="file"><br>
+    <input type="submit" value="提交">
+</form>
+
+
+文件删除
+<form method="post" th:action="@{/deleteFile}" enctype="multipart/form-data">
+    <input type="submit" value="提交">
+</form>
+文件下载
+<a th:href="@{/download}">请点击</a>
+文件下载
+<a th:href="@{/downloadone}">请点击</a>
+文件下载
+<a th:href="@{/downloadtwo}">请点击</a>
+文件下载
+<a th:href="@{/downloadthree}">请点击</a>
+</body>
+</html>

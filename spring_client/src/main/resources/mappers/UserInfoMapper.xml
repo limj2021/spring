@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--对应接口，自动扫描-->
+<mapper namespace="com.example.spring_client.dao_mapper.UserInfoMapper" >
+    <!--parameterType与resultType区别
+parameterType完成输入映射，就是调用命令的意思，可能改变数据库数据
+resultType完成输出映射，就是返回结果的意思，不对数据库发生改变
+-->
+    <!--结果集映射-->
+    <!-- column是数据库中表的列名  property是对应实体类的属性名 -->
+
+    <resultMap id="mapResult" type="UserInfo">
+        <result column="uInfoId" property="uInfoId"></result>
+        <result column="email" property="email"></result>
+        <result column="phoneNumber" property="phoneNumber"></result>
+        <result column="nackName" property="nackName"></result>
+    </resultMap>
+
+    <!--增加-->
+    <insert id="userInfoAdd" parameterType="UserInfo">
+        insert into spring.userinfo(uInfoId,email,phoneNumber,nackName)
+        values (#{uInfoId},#{email},#{phoneNumber},#{nackName});
+    </insert>
+
+    <!--删除-->
+    <delete id="userInfoDelete" parameterType="String">
+        delete from spring.userinfo where uInfoId = #{uInfoId}
+    </delete>
+
+    <!--修改-->
+    <!--修改-->
+    <update id="userUpdate" parameterType="UserInfo">
+        update spring.userinfo set email=#{email},phoneNumber=#{phoneNumber},nackName=#{nackName}
+        where uInfoId = #{uInfoId}
+    </update>
+
+</mapper>

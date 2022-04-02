@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>这是首页</title>
+    <!--使用了thymeleaf模板-->
+    <!-- Bootstrap 的 js 文件 -->
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!--导入js-->
+    <script th:src="@{/js/jquery-3.6.0.js}"></script>
+</head>
+<body>
+<a th:href="@{/skip/forum}"  class="list-group-item list-group-item-action">
+    回到论坛
+</a>
+<!--没有任务的情况下，没有判断-->
+<!--<span th:if="${#strings.isEmpty(mytasklist)}">-->
+<!--    <div style="overflow:scroll; width:100%; height:500px;" class="container border bg-light text-dark text-white">-->
+<!--        <h2 class="offset-1">用户：<span sec:authentication="name"></span>-你没有领取任务</h2>-->
+<!--    </div>-->
+<!--</span>-->
+
+
+<span th:if="${not #strings.isEmpty(mytasklist)}">
+    <div class="bg-light p-1">
+        <h2 class="offset-1">用户：<span sec:authentication="name"></span> -我的任务</h2>
+    <!--container 很重要-->
+    <div style="overflow:scroll; width:100%; height:500px;" class="container border bg-dark text-dark text-white">
+        <!--改用表单,用表单失败，改用列表组-->
+        <!---开启列表循环-->
+        <div th:each="list:${mytasklist.getContent()}" class="list-group bg-light text-dark mt-4" style="width:100%;">
+            <div class="list-group-item list-group-item-action">
+                <div class="row m-2 text-success">
+                    <div class="col-2">
+                        编号:<span th:text="${list.getId()}"/>
+                    </div>
+                    <div class="col-4 offset-2">
+                        发布人:<span th:text="${list.getPublisher()}"/>
+                    </div>
+                    <div class="col-4">
+                        <!--时间:-->
+                        <span style="font-size:12px" th:text="${list.getTime()}"/>
+                    </div>
+                </div>
+                <div class="row m-2 text-muted">
+                    <div class="col-8 offset-2">
+                        标题:<span th:text="${list.getTitle()}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10 offset-1">
+                        内容:<span th:text="${list.getContent()}"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-4" style="font-size:12px">
+                        工资<span style="font-size:12px" th:text="${list.getSalary()}"/>
+                    </div>
+                    <div class="col-4" style="font-size:12px">
+                        工作时长：朝<span th:text="${list.getWorkingOneHours()}"/>
+                        — 晚<span style="font-size:12px" th:text="${list.getWorkingTwoHours()}"/>
+                    </div>
+                    <div class="col-4" style="font-size:12px">
+                        工作地点<span style="font-size:12px" th:text="${list.getAddress()}"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-5 text-info" style="font-size:12px">
+                        联系电话<span th:text="${list.getPhoneNumber()}"/>
+                    </div>
+                    <div class="col-5 offset-2 text-danger" style="font-size:12px">
+                        <!--                                        发布中-->
+                        <span th:if="${list.getUserTaskone().getState()}==1">
+                                                <a th:href="@{/forum/updateUserTask(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-success btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            我发布的-->
+                        <span th:if="${list.getUserTaskone().getState()}==2">
+                                                <a role="button" class="btn btn-outline-warning btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            被领取-->
+                        <span th:if="${list.getUserTaskone().getState()}==3">
+                                                <a role="button" class="btn btn-outline-secondary btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            已领取-->
+                        <span th:if="${list.getUserTaskone().getState()}==4">
+                                                <a role="button" class="btn btn-outline-primary btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            执行中-->
+                        <span th:if="${list.getUserTaskone().getState()}==5">
+                                                <a th:href="@{/forum/updateUserTasktwo(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-info btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            已完成-->
+                        <span th:if="${list.getUserTaskone().getState()}==6">
+                                                <a role="button" class="btn btn-outline-dark btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            删除任务-->
+                        <span th:if="${list.getUserTaskone().getState()}==7">
+                                                <a th:href="@{/forum/updateUserTaskdelete(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-danger btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            异常情况-->
+                        <span th:if="${list.getUserTaskone().getState()}==8">
+                                                <a role="button" class="btn btn-outline-light btn-sm text-dark" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <!--分页器-->
+        <div class="container mt-3">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a th:href="@{/forum/myusertaskall(page=1)}" class="page-link">首页</a></li>
+                <span th:if="${mytasklist.getPageNum()}!=1">
+                    <li class="page-item"><a th:href="@{/forum/myusertaskall(page=${mytasklist.getPageNum()-1})}" class="page-link">上一页</a></li>
+                </span>
+                <li class="page-item active"><a th:text="'第'+(${mytasklist.getPageNum()})+'页'" class="page-link"><!--当前页--></a></li>
+                <!--                <span th:if="${mytasklist.getPageNum()}!=mytasklist.getTotalPages()">-->
+                <li class="page-item"><a th:href="@{/forum/myusertaskall(page=${mytasklist.getPageNum()+1})}" class="page-link">下一页</a></li>
+                <!--                </span>-->
+                <li class="page-item"><a th:href="@{/forum/myusertaskall(page=${mytasklist.getTotalPages()})}" class="page-link">尾页</a></li>
+
+                <li class="page-item"><a th:text="'共'+(${mytasklist.getTotalPages()})+'页'"  class="page-link"></a></li>
+            </ul>
+        </div>
+</span>
+
+<span th:if="${not #strings.isEmpty(publlisherlist)}">
+    <div class="bg-light p-1 ">
+        <h2 class="offset-1">用户：<span sec:authentication="name"></span> -我发布的任务</h2>
+    <!--container 很重要-->
+    <div style="overflow:scroll; width:100%; height:500px;" class="container border bg-dark text-dark text-white">
+        <!--改用表单,用表单失败，改用列表组-->
+        <!---开启列表循环-->
+        <div th:each="list:${publlisherlist.getContent()}" class="list-group bg-light text-dark mt-4" style="width:100%;">
+            <div class="list-group-item list-group-item-action">
+                <div class="row m-2 text-success">
+                    <div class="col-2">
+                        编号:<span th:text="${list.getId()}"/>
+                    </div>
+                    <div class="col-4 offset-2">
+                        发布人:<span th:text="${list.getPublisher()}"/>
+                    </div>
+                    <div class="col-4">
+                        <!--时间:-->
+                        <span style="font-size:12px" th:text="${list.getTime()}"/>
+                    </div>
+                </div>
+                <div class="row m-2 text-muted">
+                    <div class="col-8 offset-2">
+                        标题:<span th:text="${list.getTitle()}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10 offset-1">
+                        内容:<span th:text="${list.getContent()}"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-4" style="font-size:12px">
+                        工资<span style="font-size:12px" th:text="${list.getSalary()}"/>
+                    </div>
+                    <div class="col-4" style="font-size:12px">
+                        工作时长：朝<span th:text="${list.getWorkingOneHours()}"/>
+                        — 晚<span style="font-size:12px" th:text="${list.getWorkingTwoHours()}"/>
+                    </div>
+                    <div class="col-4" style="font-size:12px">
+                        工作地点<span style="font-size:12px" th:text="${list.getAddress()}"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-5 text-info" style="font-size:12px">
+                        联系电话<span th:text="${list.getPhoneNumber()}"/>
+                    </div>
+                    <div class="col-5 offset-2 text-danger" style="font-size:12px">
+                        <!--                                        发布中-->
+                        <span th:if="${list.getUserTaskone().getState()}==1">
+                                                <a th:href="@{/forum/updateUserTask(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-success btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            我发布的-->
+                        <span th:if="${list.getUserTaskone().getState()}==2">
+                                                <a role="button" class="btn btn-outline-warning btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            被领取-->
+                        <span th:if="${list.getUserTaskone().getState()}==3">
+                                                <a role="button" class="btn btn-outline-secondary btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            已领取-->
+                        <span th:if="${list.getUserTaskone().getState()}==4">
+                                                <a role="button" class="btn btn-outline-primary btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            执行中-->
+                        <span th:if="${list.getUserTaskone().getState()}==5">
+                                                <a th:href="@{/forum/updateUserTasktwo(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-info btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            已完成-->
+                        <span th:if="${list.getUserTaskone().getState()}==6">
+                                                <a role="button" class="btn btn-outline-dark btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            删除任务-->
+                        <span th:if="${list.getUserTaskone().getState()}==7">
+                                                <a th:href="@{/forum/updateUserTaskdelete(taskid=${list.getUserTaskone().getForumid()})}" role="button" class="btn btn-outline-danger btn-sm" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                        <!--                                            异常情况-->
+                        <span th:if="${list.getUserTaskone().getState()}==8">
+                                                <a role="button" class="btn btn-outline-light btn-sm text-dark" th:text="${list.getTask().getTaskProgress()}"></a>
+                                            </span>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+    <!--分页器-->
+        <div class="container mt-3">
+            <ul class="pagination justify-content-center">
+                <li class="page-item"><a th:href="@{/forum/publisherusertaskall(page=1)}" class="page-link">首页</a></li>
+                <span th:if="${publlisherlist.getPageNum()}!=1">
+                    <li class="page-item"><a th:href="@{/forum/publisherusertaskall(page=${publlisherlist.getPageNum()-1})}" class="page-link">上一页</a></li>
+                </span>
+                    <li class="page-item active"><a th:text="'第'+(${publlisherlist.getPageNum()})+'页'" class="page-link"><!--当前页--></a></li>
+                <li class="page-item"><a th:href="@{/forum/publisherusertaskall(page=${publlisherlist.getPageNum()+1})}" class="page-link">下一页</a></li>
+                <li class="page-item"><a th:href="@{/forum/publisherusertaskall(page=${publlisherlist.getTotalPages()})}" class="page-link">尾页</a></li>
+                <li class="page-item"><a th:text="'共'+(${publlisherlist.getTotalPages()})+'页'"  class="page-link"></a></li>
+            </ul>
+        </div>
+</span>
+
+</body>
+</html>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--对应接口，自动扫描-->
+<mapper namespace="com.example.spring_client.dao_mapper.AnnouncementMapper" >
+    <!--parameterType与resultType区别
+parameterType完成输入映射，就是调用命令的意思，可能改变数据库数据
+resultType完成输出映射，就是返回结果的意思，不对数据库发生改变
+-->
+    <!--结果集映射-->
+    <!-- column是数据库中表的列名  property是对应实体类的属性名 -->
+
+    <resultMap id="mapResult" type="Announcement">
+        <result column="userid" property="userId"></result>
+        <result column="time" property="time"></result>
+        <result column="title" property="title"></result>
+        <result column="content" property="content"></result>
+    </resultMap>
+
+    <!--增加-->
+    <insert id="announcementAdd" parameterType="Announcement">
+        insert into spring.announcement(userid,time,title,content)values (#{userid},#{time},#{title},#{content});
+    </insert>
+
+    <!--删除-->
+    <delete id="announcementDelete" parameterType="int">
+        delete from spring.announcement where aid = #{aid}
+    </delete>
+
+    <!--查询一条数据-->
+    <select id="userAnnouncementone" resultMap="UserAnnouncemento">
+        select u.username,a.rolename,u.userid,an.aid,an.time,an.title,an.content
+        from user u,announcement an,authority a,user_relation ur
+        where u.userId=an.userId
+          and u.userId=ur.userId
+          and a.authorityId=ur.authorityId
+        ORDER BY an.time DESC LIMIT 1
+    </select>
+    <resultMap id="UserAnnouncemento" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <association property="announcement" javaType="Announcement">
+            <result column="aid" property="aid"></result>
+            <result column="userid" property="userId"></result>
+            <result column="time" property="time"></result>
+            <result column="title" property="title"></result>
+            <result column="content" property="content"></result>
+        </association>
+    </resultMap>
+
+    <!--查询全部-->
+    <select id="userAnnouncement" resultMap="UserAnnouncement">
+        select u.username,a.rolename,u.userid,an.aid,an.time,an.title,an.content
+        from user u,announcement an,authority a,user_relation ur
+        where u.userId=an.userId
+          and u.userId=ur.userId
+          and a.authorityId=ur.authorityId
+    </select>
+    <resultMap id="UserAnnouncement" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <collection property="announcementall" ofType="Announcement">
+            <result column="userid" property="userId"></result>
+            <result column="aid" property="aid"></result>
+            <result column="time" property="time"></result>
+            <result column="title" property="title"></result>
+            <result column="content" property="content"></result>
+        </collection>
+    </resultMap>
+
+</mapper>

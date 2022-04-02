@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--对应接口，自动扫描-->
+<mapper namespace="com.example.spring_client.dao_mapper.UserRelationMapper" >
+    <!--parameterType与resultType区别
+parameterType完成输入映射，就是调用命令的意思，可能改变数据库数据
+resultType完成输出映射，就是返回结果的意思，不对数据库发生改变
+-->
+    <!--结果集映射-->
+    <!-- column是数据库中表的列名  property是对应实体类的属性名 -->
+
+    <resultMap id="mapResult" type="User_relation">
+        <result column="urId" property="urId"></result>
+        <result column="userId" property="userId"></result>
+        <result column="authorityId" property="authorityId"></result>
+        <result column="uInfoId" property="uInfoId"></result>
+    </resultMap>
+
+    <!--增加-->
+    <insert id="userRelationAdd" parameterType="User_relation">
+        insert into spring.user_relation(userId,authorityId,uInfoId)
+        values (#{userId},#{authorityId},#{uInfoId});
+    </insert>
+
+    <!--删除-->
+    <delete id="userRelationDelete" parameterType="String">
+        delete from spring.user_relation where userId = #{userId}
+    </delete>
+
+    <!--修改-->
+    <!--修改-->
+    <update id="userRelationUpdate" parameterType="User_relation">
+        update spring.user_relation set authorityId=#{authorityId},uInfoId=#{uInfoId}
+        where userId = #{userId}
+    </update>
+
+</mapper>

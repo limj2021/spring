@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>这是首页</title>
+    <!--使用了thymeleaf模板-->
+    <!-- Bootstrap 的 js 文件 -->
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!--导入js-->
+    <script th:src="@{/js/jquery-3.6.0.js}"></script>
+</head>
+<body>
+
+<!--管理数据库各个表-->
+<div class="row p-3 bg-light">
+    <div class="container col-3">
+        <div class="bg-dark p-2" style=" width:100%; height:600px;">
+            <div class="list-group bg-light p-2 " style=" width:100%; height:100%;">
+                <h3 class="text-dark m-1">后台数据管理</h3>
+                <p class="text-dark m-1">当前管理员：[[${session.loginUser}]]
+                    <span sec:authentication="name"></span>
+                </p>
+                <!--可以加图标-->
+                <a th:href="@{/skip/forum}"  class="list-group-item list-group-item-action">
+                    回到论坛
+                </a>
+                <a th:href="@{/skip/userManagement}" class="list-group-item list-group-item-action">
+                    后台管理
+                </a>
+                <a th:href="@{/user/userAuthorAll}" class="list-group-item list-group-item-action">
+                    察看用户权限
+                </a>
+                <a th:href="@{/user/userInfolist}" class="list-group-item list-group-item-action">
+                    察看用户信息
+                </a>
+                <a th:href="@{/Announcement/all}" class="list-group-item list-group-item-action">
+                    管理员公告管理
+                </a>
+                <a th:href="@{/forum/forumAll}" class="list-group-item list-group-item-action">
+                    管理论坛评论
+                </a>
+                <a href="#" class="list-group-item list-group-item-action">
+                    统计用户访问人数
+                </a>
+<!--                <a th:href="@{/logout}" href="#" class="list-group-item list-group-item-action">
+                    退出登录
+                </a>
+                <a  href="#" class="list-group-item list-group-item-action">
+                    注销账号
+                </a>-->
+            </div>
+        </div>
+    </div>
+    <div class="col-9" style="text-align:center">
+        <div class="bg-dark p-2" style="overflow:scroll; width:100%; height:600px;">
+
+            <div class="bg-light" th:if="${not #strings.isEmpty(Empty)}" style=" width:100%; height:100%;">
+                <h1>欢迎来到后台管理</h1>
+            </div>
+
+            <!--当/user/userAuthorAll,传递的ruserAuthorAll不为空，才显示表格内容-->
+            <table class="table table-hover bg-light" style="font-size:12px" th:if="${not #strings.isEmpty(userAuthorlist)}">
+                <thead>
+                <tr>
+                    <th>用户id</th>
+                    <th>姓名</th>
+                    <th>密码</th>
+                    <th>权限id</th>
+                    <th>权限等级</th>
+                    <th>权限名</th>
+                    <th>升级权限</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="list:${userAuthorlist}">
+                    <td th:text="${list.getUserId()}"></td>
+                    <td th:text="${list.getUsername()}"></td>
+                    <td th:text="${list.getPassword()}"></td>
+                    <td th:text="${list.getAuthority().getAuthorityId()}"></td>
+                    <td th:text="${list.getAuthority().getAuthorityName()}"></td>
+                    <td th:text="${list.getAuthority().getRoleName()}"></td>
+                    <td>
+                        <!--th:href="@{'/emp/'+${emp.getId()}}"失败了-->
+                        <!--th:href="@{/user/registerDelete/}+${list.getNackName()}"失败了-->
+                        <!--th:href="@{/emp/{id}(id=${emp.getId()})}"此写法不报错，来自官方文档,不过失败了-->
+                        <span th:if="${list.getAuthority().getAuthorityId()}==001">
+                            <a th:href="@{/user/userupdownUpdate(userid=${list.getUserId()},id=${list.getAuthority().getAuthorityId()})}" role="button" class="btn btn-outline-info btn-sm">下降权限变成用户</a>
+                        </span>
+                        <span th:if="${list.getAuthority().getAuthorityId()}==002">
+                            <a th:href="@{/user/userupdownUpdate(userid=${list.getUserId()},id=${list.getAuthority().getAuthorityId()})}" role="button" class="btn btn-outline-dark btn-sm"}>升级权限变成管理员</a>
+                        </span>
+                    </td>
+                    <td>
+                        <a th:href="@{/user/userAuthorDelete(user=${list.getUsername()})}" class="btn btn-danger" role="button" style="font-size:12px">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!--当/user/userInfoAll,传递的userInfoAll不为空，才显示表格内容-->
+            <table class="table table-hover bg-light" style="font-size:12px" th:if="${not #strings.isEmpty(userInfolist)}">
+                <thead>
+                <tr>
+                    <th>用户id</th>
+                    <th>姓名</th>
+                    <th>密码</th>
+                    <th>用户信息id</th>
+                    <th>邮箱</th>
+                    <th>电话</th>
+                    <th>昵称</th>
+<!--                    <th>修改</th>-->
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="list:${userInfolist}">
+                    <td th:text="${list.getUserId()}"></td>
+                    <td th:text="${list.getUsername()}"></td>
+                    <td th:text="${list.getPassword()}"></td>
+                    <td th:text="${list.getUserInfo().getUInfoId()}"></td>
+                    <td th:text="${list.getUserInfo().getEmail()}"></td>
+                    <td th:text="${list.getUserInfo().getPhoneNumber()}"></td>
+                    <td th:text="${list.getUserInfo().getNackName()}"></td>
+<!--                    <td>-->
+<!--                        &lt;!&ndash;th:href="@{'/emp/'+${emp.getId()}}"失败了&ndash;&gt;-->
+<!--                        &lt;!&ndash;th:href="@{/user/registerDelete/}+${list.getNackName()}"失败了&ndash;&gt;-->
+<!--                        &lt;!&ndash;th:href="@{/emp/{id}(id=${emp.getId()})}"此写法不报错，来自官方文档,不过失败了&ndash;&gt;-->
+<!--                        <a  class="btn btn-warning" role="button" style="font-size:12px">修改（待处理）</a>-->
+<!--                    </td>-->
+                    <td>
+                        <a  th:href="@{/user/userInfoDelete(user=${list.getUsername()})}" class="btn btn-danger" role="button" style="font-size:12px">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+
+            <!--当/Announcement/all,传递的userInfoAll不为空，才显示表格内容-->
+            <table class="table table-hover bg-light" style="font-size:12px" th:if="${not #strings.isEmpty(announcementlist)}">
+                <thead>
+                <tr>
+                    <th>公告发布人</th>
+                    <th>userid</th>
+                    <th>aid</th>
+                    <th>发布时间</th>
+                    <th>标题</th>
+                    <th>内容</th>
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+<!--                双重嵌套-->
+                <span th:each="lists:${announcementlist}">
+                    <tr th:each="list:${lists.getAnnouncementall()}">
+                        <td th:text="${lists.getUsername()}"></td>
+                        <td th:text="${lists.getUserId()}"></td>
+                        <td th:text="${list.getAid()}"></td>
+                        <td th:text="${list.getTime()}"></td>
+                        <td th:text="${list.getTitle()}"></td>
+                        <td th:text="${list.getContent()}"></td>
+                        <!--th:href="@{'/emp/'+${emp.getId()}}"失败了-->
+                        <!--th:href="@{/user/registerDelete/}+${list.getNackName()}"失败了-->
+                        <!--th:href="@{/emp/{id}(id=${emp.getId()})}"此写法不报错，来自官方文档,不过失败了-->
+                    <td>
+                        <a  th:href="@{/Announcement/delete(aid=${list.getAid()})}" class="btn btn-danger" role="button" style="font-size:12px">删除</a>
+                    </td>
+                    </tr>
+                </span>
+                </tbody>
+            </table>
+
+            <!--当/forum/userMangementAll,传递的forumlist不为空，才显示表格内容-->
+            <table class="table table-hover bg-light" style="font-size:12px" th:if="${not #strings.isEmpty(forumlist)}">
+                <thead>
+                <tr>
+                    <th>发布人</th>
+                    <th>标题</th>
+                    <th>工资</th>
+                    <th>上班时间</th>
+                    <th>下班时间</th>
+                    <th>地点</th>
+                    <th>电话</th>
+                    <td>usertaskid</td>
+<!--                    <th>修改</th>-->
+                    <th>删除</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="lists:${forumlist}">
+                    <td th:text="${lists.getPublisher()}"></td>
+                    <td th:text="${lists.getTitle()}"></td>
+                    <td th:text="${lists.getSalary()}"></td>
+                    <td th:text="${lists.getWorkingOneHours()}"></td>
+                    <td th:text="${lists.getWorkingTwoHours()}"></td>
+                    <td th:text="${lists.getAddress()}"></td>
+                    <td th:text="${lists.getPhoneNumber()}"></td>
+                    <td th:text="${lists.getTaskid()}"></td>
+<!--                    <td>-->
+<!--                        <a class="btn btn-warning" role="button" style="font-size:12px">修改(待处理)</a>-->
+<!--                    </td>-->
+                    <td>
+                        <a th:href="@{/forum/forumDelete(id=${lists.getId()})}" class="btn btn-danger" role="button" style="font-size:12px">删除</a>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="row p-4 bg-light">
+    <div class="bg-dark p-2">
+        <div class="bg-light">
+            这里没有内容
+        </div>
+    </div>
+</div>
+
+
+</body>
+</html>

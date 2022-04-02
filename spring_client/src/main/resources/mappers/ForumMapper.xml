@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--对应接口，自动扫描-->
+<mapper namespace="com.example.spring_client.dao_mapper.ForumMapper" >
+    <!--parameterType与resultType区别
+parameterType完成输入映射，就是调用命令的意思，可能改变数据库数据
+resultType完成输出映射，就是返回结果的意思，不对数据库发生改变
+-->
+    <!--结果集映射-->
+    <!-- column是数据库中表的列名  property是对应实体类的属性名 -->
+
+    <resultMap id="mapResult" type="Forum">
+        <result column="id" property="id"></result>
+        <result column="publisher" property="publisher"></result>
+        <result column="time" property="time"></result>
+        <result column="title" property="title"></result>
+        <result column="content" property="content"></result>
+        <result column="salary" property="salary"></result>
+        <result column="workingOneHours" property="workingOneHours"></result>
+        <result column="workingTwoHours" property="workingTwoHours"></result>
+        <result column="address" property="address"></result>
+        <result column="phoneNumber" property="phoneNumber"></result>
+        <result column="taskid" property="taskid"></result>
+    </resultMap>
+
+    <!--增加-->
+    <insert id="forumAdd" parameterType="Forum">
+        insert into spring.forum(publisher,time,title,content,salary,
+                                 workingOneHours,workingTwoHours,address,phoneNumber,taskid)
+        values (#{publisher},#{time},#{title},#{content},#{salary},
+                #{workingOneHours},#{workingTwoHours},#{address},#{phoneNumber},#{taskid});
+    </insert>
+
+    <!--删除-->
+    <delete id="forumDelete" parameterType="int">
+        delete from spring.forum where id = #{id}
+    </delete>
+
+    <!--删除-->
+    <delete id="forumtaskidDelete" parameterType="String">
+        delete from spring.forum where taskid = #{taskid}
+    </delete>
+    <!--修改-->
+    <!--查询全部-->
+    <select id="forumQueAll" resultMap="mapResult">
+        select * from spring.forum order by time desc
+    </select>
+
+    <!--查询模糊查询标题-->
+    <select id="forumQueLike" resultType="Forum">
+        select * from spring.forum where title like concat('%','${title}','%')
+    </select>
+
+    <!--    mybatis分页插件使用-->
+    <select id="forumQuePage" resultMap="mapResult">
+        select
+        <include refid="Base_Column_List"/>
+        from spring.forum order by time desc
+    </select>
+    <sql id="Base_Column_List">
+        id,publisher,time,title,content,salary,workingOneHours,workingTwoHours,address,phoneNumber,taskid
+    </sql>
+
+</mapper>

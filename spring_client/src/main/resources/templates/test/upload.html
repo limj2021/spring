@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>这是首页</title>
+    <!--使用了thymeleaf模板-->
+    <!-- Bootstrap 的 js 文件 -->
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!--导入js-->
+    <script th:src="@{/js/jquery-3.6.0.js}"></script>
+</head>
+<body data-bs-spy="scroll" data-bs-target=".navbar" data-bs-offset="10">
+
+<a th:href="@{/skip/forum}"  class="list-group-item list-group-item-action">
+    回到论坛
+</a>
+<p>单文件上传</p>
+<form th:action="@{/filetwo/upload}" method="post" enctype="multipart/form-data">
+    文件：<input type="file" name="file"/>
+    <input type="submit">
+</form>
+
+
+<a th:href="@{/filetwo/download}">下载文件</a>
+
+
+
+
+<p></p>
+第一种
+<form th:action="@{/email/admin}" method="post" enctype="multipart/form-data">
+<input value="" id="img1">
+<input value="" id="img2">
+<input value="" id="img3" name="BASE64str">
+<input id="input-file" class="upload" type="file" name="emailfile" value="">
+<!--<img src="" alt="">-->
+    <input type="submit">
+</form>
+<script>
+    $(function(){
+        $('.upload').change(function(){
+            var oFReader = new FileReader();
+            var file = document.getElementById('input-file').files[0];
+            oFReader.readAsDataURL(file);
+            oFReader.onloadend = function(oFRevent){
+                var src = oFRevent.target.result;
+                $('img').attr('src',src);
+                $('#img1').attr('value',oFReader);
+                $('#img2').attr('value',file);
+                $('#img3').attr('value',src);
+            }
+        })
+    })
+</script>
+
+
+<p></p>
+第二种
+<!--<input id="asdasdada" style="color:#f00;" value=""/>
+<input id="asdasdada1" style="color:#f00;" value=""/>
+<input id="asdasdada3" style="color:#f00;" value=""/>
+<input type="file" id="img_url" name="img" value=""/> //用于接收正确url的值
+<script type="text/javascript">
+    // 上传图片处理
+    var uploadInst = upload.render({
+        elem: '#upload_img' //绑定元素
+        ,url: ".." //上传接口
+        ,size:50
+        ,accept: 'images' //指定允许上传时校验的文件类型
+        ,acceptMime: 'image/*'//筛选出的文件类型
+        ,before: function(obj){ //选择文件后回调
+            obj.preview(function(index, file, result){
+                $('#pre_img').attr('src', result); //图片链接（base64）,插入用于预览
+                $('#asdasdada1').attr('value',result);
+            });
+        }
+        ,done: function(res){
+            //上传完毕回调
+            if(res.code >0){
+                return layer.msg('图片上传失败')
+            }
+            document.getElementById("img_url").value = res.msg;
+            $('#asdasdada3').attr('value',res.msg);
+        }
+        ,error: function(){
+            //请求异常回调
+            layer.closeAll('loading'); //关闭loading
+        }
+    });
+    //监听提交
+    form.on('submit(add)', function(data){
+        data.field.file = document.getElementById("img_url").value;
+        $('#asdasdada').attr('value',data.field.file);
+        //发异步，把数据提交给php
+        $.ajax({
+            url:'${pageContent.request.contextPath}/ajax/test',
+            data:data.field,
+            dataType:'text',
+            type:'post',
+            success:function (data) {
+                layer.alert("增加成功", {icon: 6},function () {
+                    // 获得frame索引
+                    var index = parent.layer.getFrameIndex(window.name);
+                    //关闭当前frame
+                    parent.layer.close(index);
+                });
+            }
+        })
+        return false;
+    });
+</script>
+
+
+<p></p>
+第三种
+<h4>JS获取文件域完整路径的方法，兼容不同浏览器</h4>
+<form th:action="@{/email/usertest}" method="post" enctype="multipart/form-data">
+    <input type="hidden" id="text" style="color:#f00;" name="sss" value=""/>
+    <input type="file" id="file11" onchange="getvl(this)" name="emailfile"/>
+    <input type="submit">
+</form>
+
+<script type="text/javascript">
+    //FX获取文件路径方法
+    function readFileFirefox(fileBrowser) {
+        try {
+            netscape.security.PrivilegeManager.enablePrivilege("UniversalXPConnect");
+        }
+        catch (e) {
+            alert('无法访问本地文件，由于浏览器安全设置。为了克服这一点，请按照下列步骤操作：(1)在地址栏输入"about:config";(2) 右键点击并选择 New->Boolean; (3) 输入"signed.applets.codebase_principal_support" （不含引号）作为一个新的首选项的名称;(4) 点击OK并试着重新加载文件');
+            return;
+        }
+        var fileName=fileBrowser.value; //这一步就能得到客户端完整路径。下面的是否判断的太复杂，还有下面得到ie的也很复杂。
+        var file = Components.classes["@mozilla.org/file/local;1"]
+            .createInstance(Components.interfaces.nsILocalFile);
+        try {
+            // Back slashes for windows
+            file.initWithPath( fileName.replace(/\//g, "\\\\") );
+        }
+        catch(e) {
+            if (e.result!=Components.results.NS_ERROR_FILE_UNRECOGNIZED_PATH) throw e;
+            alert("File '" + fileName + "' cannot be loaded: relative paths are not allowed. Please provide an absolute path to this file.");
+            return;
+        }
+        if ( file.exists() == false ) {
+            alert("File '" + fileName + "' not found.");
+            return;
+        }
+
+
+        return file.path;
+    }
+
+
+    //根据不同浏览器获取路径
+    function getvl(obj){
+//判断浏览器
+        var Sys = {};
+        var ua = navigator.userAgent.toLowerCase();
+        var s;
+        (s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] :
+            (s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] :
+                (s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] :
+                    (s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] :
+                        (s = ua.match(/version\/([\d.]+).*safari/)) ? Sys.safari = s[1] : 0;
+        var file_url="";
+        if(Sys.ie<="6.0"){
+            //ie5.5,ie6.0
+            file_url = obj.value;
+        }else if(Sys.ie>="7.0"){
+            //ie7,ie8
+            obj.select();
+            file_url = document.selection.createRange().text;
+        }else if(Sys.firefox){
+            //fx
+            //file_url = document.getElementById("file").files[0].getAsDataURL();//获取的路径为FF识别的加密字符串
+            file_url = readFileFirefox(obj);
+        }else if(Sys.chrome){
+            file_url = obj.value;
+        }
+        //alert(file_url);
+        // document.getElementById("text").innerHTML="获取文件域完整路径为："+file_url;
+        // document.getElementById("file11").innerHTML=file_url;
+        // if (file_url!=null){
+        $('#text').attr('value',file_url);
+        $('#file11').attr('value',file_url);
+        // }
+
+    }
+</script>
+
+<p></p>
+第四种
+<input id="abc" value="">
+<input id="aaa" value="">
+<input id="bbb" value="">
+<input type="file" id="fileabc" name="file">
+
+<script type="text/javascript">
+    function getObjectURL(file) {
+        var url = null;
+        if (window.createObjcectURL != undefined) {
+            url = window.createOjcectURL(file);
+        } else if (window.URL != undefined) {
+            url = window.URL.createObjectURL(file);
+        } else if (window.webkitURL != undefined) {
+            url = window.webkitURL.createObjectURL(file);
+        }
+        $('#bbb').attr('value',url);
+        return url;
+    }
+    //使用方法
+    $("#fileabc").change(function(){
+        var file = this.files[0];
+        var url = getObjectURL(file);//blob:http://doamin.com/5376c16a-02f9-489f-b30c-97a1808d5724
+        $('#abd').attr('value',file);
+        $('#aaa').attr('value',url);
+    });
+</script>
+
+<p></p>
+第五种
+<input id="fffa" value="">
+<input type="file" id="aptitude">
+
+
+<script type="text/javascript">
+    window.onload = function() {
+        var url = null;
+        var fileObj = document.getElementById("aptitude").files[0];
+        fileObj.change=function(){
+            if (window.createObjcectURL != undefined) {
+                url = window.createOjcectURL(fileObj);
+                $('#fffa').attr('value',url);
+            } else if (window.URL != undefined) {
+                url = window.URL.createObjectURL(fileObj);
+                $('#fffa').attr('value',url);
+            } else if (window.webkitURL != undefined) {
+                url = window.webkitURL.createObjectURL(fileObj);
+                $('#fffa').attr('value',url);
+            }
+
+        }
+    }
+</script>-->
+
+
+第一种
+<form th:action="@{/email/admin}" method="post" enctype="multipart/form-data">
+    <input id="zz" value="">
+    <input type="file" class="uploading" name="emailfile" id="uploadimg" accept="image/jpg,image/jpeg,image/gif,image/png">
+    <input type="submit">
+    <div style="width: 300px;height: 200px;text-align: center;">
+        <img id="img" style="max-width: 300px;max-height: 200px;"/>
+    </div>
+
+</form>
+
+
+<script>
+    function _addImgFileListener(obj, fun) {
+        $(obj).change(function() {
+            try {
+                var file = this.files[0];
+                var reader = new FileReader();
+                reader.onload = function() {
+                    var img = new Image();
+                    img.src = reader.result;
+                    img.onload = function() {
+                        var w = img.width,
+                            h = img.height;
+                        var canvas = document.createElement('canvas');
+                        var ctx = canvas.getContext('2d');
+                        $(canvas).attr({
+                            width: w,
+                            height: h
+                        });
+                        ctx.drawImage(img, 0, 0, w, h);
+                        var base64 = canvas.toDataURL('image/jpeg', 0.5);
+                        var result = {
+                            url: window.URL.createObjectURL(file),
+                            base64: base64,
+                            clearBase64: base64.substr(base64.indexOf(',') + 1),
+                            suffix: base64.substring(base64.indexOf('/') + 1, base64.indexOf(';')),
+                        };
+                        fun(result);
+                    }
+                }
+                reader.readAsDataURL(this.files[0]);
+            } catch(e) {
+                _showMsg(e);
+            }
+        });
+    }
+    $(document).ready(function() {
+        _addImgFileListener("#uploadimg", function(data) {
+            //你的业务
+            console.log(data.base64)
+            $("#img").attr("src",data.base64);
+            $('#zz').attr('value',data.base64);
+        });
+    })
+</script>
+
+
+
+</body>
+</html>

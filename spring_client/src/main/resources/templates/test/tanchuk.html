@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Bootstrap 实例 - 模态框（Modal）插件</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <script src="https://cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<!-- 模态框（Modal） -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
+                    &times;
+                </button>
+                <h4 class="modal-title" id="myModalLabel">
+                    模态框（Modal）标题
+                </h4>
+            </div>
+            <div class="modal-body">
+                在这里添加一些文本
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary">
+                    提交更改
+                </button>
+            </div>
+        </div><!-- /.modal-content -->
+    </div><!-- /.modal -->
+</div>
+<script type="text/javascript">
+
+    $(function(){
+        // $('#myModal').modal('show')
+        // var modalToggle = document.getElementById('myModal') // relatedTarget
+        // myModal.show(modalToggle)
+        // var myModal = new bootstrap.Modal(document.getElementById('myModal'), options)
+    });
+    $(function(){
+        $('#myModal').modal('options')
+    });
+
+
+
+    function showNoticeList(type){
+        $.ajax({
+            url : '${xxx}/manager/notice',
+            type : "post",
+            async : true,
+            dataType : "json",
+            success : function(data) {//查询当前是否有需要展示的公告
+                if(type == 'click' && data.length == 0){//当是点击首页按钮，并且没有查到公告时，提示暂无公告。
+                    layer.alert('暂无公告！', {icon: 0});
+                }
+                if(data.length > 0){
+                    var lastDate = $.cookie('lastDate'); //获取上次查看的公告时间，进行对比来区分最近的公告是否被查看
+                    var showNotice = $.cookie('showNotice');//获取存在cookie里的是否查看公告的值为yes还是no
+                    if(data[0].createTime != lastDate){//当查询出的公告不是上一次查看的公告时，设置showNotice为yes，无论用户设置是否查看公告都进行弹出
+                        $.cookie('showNotice','yes');
+                    }
+                    if(data[0].createTime == lastDate && showNotice == 'no' && type == 'ready'){ //如果上次查看的公告的修改时间等于本次最新的公告修改时间 默认为用户已看过 可跳过
+                        return;
+                    }
+                    layer.open({
+                        title: '公告'
+                        ,content: data[0].content //公告内容
+                        ,area: ['970px', '400px']
+                        ,btn: ['24h内不再显示', '确定']
+                        ,btn1: function(index, layero){
+                            layer.alert('24h内不再自动弹出公告，您可以手动点击首页公告栏查看最新公告！', {icon: 0});
+                            var date = new Date();
+                            date.setTime(date.getTime()+24*60*60*1000);
+                            $.cookie('showNotice', 'no', {expires: date});//设置showNotice的值为no，失效时间为24h
+                        }
+                        ,btn2: function(index, layero){
+
+                        }
+                    });
+                    $.cookie('lastDate',data[0].createTime); //设置上次查看的公告时间为 当前公告时间
+                },
+                error:function(data) {
+                    alert("公告查询出错！");
+                }
+            });
+    }
+
+</script>
+</body>
+</html>

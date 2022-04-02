@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../static/js/jquery-3.6.0.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    function a1(){
+        $.ajax({
+            url:"${pageContent.request.contextPath}/ajax/test",
+            data:{"name":$("txtName").val()},
+            //服务器返回的数据
+            success:function(data){
+                console.log(data);
+            }
+        });
+        //输出
+        $("txtName").val();
+    }
+
+    $(function(){
+        $("#btn").click(function(){
+            $.post("${pageContent.request.contextPath}/ajax/text2}",
+                function(data){
+                caches.log(data);
+                val html="";
+                for (var i=1;i<data.length;i++){
+                    html+="<tr>"+
+                        "<td>"+ data[i].username+"</td>"+
+                        "<td>"+ data[i].password+"</td>"+
+                        "</tr>>"
+                }
+                $("#content").html(html);
+                })
+        })
+    })
+</script>
+<input type="text" id="txtName" onblur="a1()">
+
+<input type="button" id="btn" value="获得数据">
+<table width="80%" align="centent">
+    <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+    </tr>
+    <tbody id="centent">
+
+    </tbody>
+</table>
+
+</body>
+</html>

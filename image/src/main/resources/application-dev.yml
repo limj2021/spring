@@ -1,0 +1,150 @@
+#项目开发环境
+spring:
+  servlet:
+    multipart:
+#      开启上传和下载
+      enabled: true
+#      最大文件大小
+      max-file-size: 20MB
+#      单次请求文件最大大小
+      max-request-size: 20MB
+  #前后端模板:关闭缓存，防止页面刷新无效
+  thymeleaf:
+    cache: false
+  #非关系型数据库，其实就是实现局部缓存
+  redis:
+    host: 127.0.0.1
+#    端口
+    port: 6379
+#    连接密码，默认为空
+    password:
+    jedis:
+      pool:
+        #连接池最大连接数（使用负值表示没有限制）
+        max-active: 8
+        #连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-wait: -1
+        #连接池中的最大空闲连接
+        max-idle: 8
+        #连接池中的最小空闲连接
+        min-idle: 0
+    #连接超时时间（毫秒）
+    connect-timeout: 30000
+  #连接数据库
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver   #驱动
+    username: root          #数据库用户
+    password: 123456        #数据库密码
+    #调用数据库位置
+    url: jdbc:mysql://localhost:3306/spring?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    type: com.alibaba.druid.pool.DruidDataSource
+    #配置数据源信息
+    initialSize: 5
+    minIdle: 5
+    maxActive: 20
+    maxWait: 60000
+    timeBetweenEvictionRunsMills: 60000
+    minEvictableIdleTimeMills: 300000
+    validationQuery: SELECT 1 FROM DUAL
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+    poolPreparedStatements: true
+    #配置监控统计拦截的filters, stat:监控统计、Log4j:日志记录、wall:防御sql注入
+    #如果允许时报错 java. Lang.CLassNotFoundException: org.apache. Log4j.Priority
+    #则导入 Log4j依赖即可, Maven 地址: https://mvnrepository.com/artifact/Log4j/log4j
+    filters: stat,wall,log4j
+    maxPoolPreparedStatementPerConnectionSize: 20
+    useGlobalDataSourceStat: true
+    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+
+  #自定义国际化配置文件路径
+  messages:
+    basename: i18n.login
+    encoding: UTF-8
+  #security提供配置内容-不写下面配置时-系统名默认user-密码，随机生成
+  #  #security:
+  #    user:
+  #      name: admin         #用户名
+  #      password: 123456    #密码
+  #      role: admin
+
+  mvc:
+    #为了使swagger正常使用调的配置--好像不行
+    #pathmatch:
+    #  matching-strategy: ant_path_matcher
+    #时间格式化
+    format:
+      date-time: yyyy-MM-dd
+  #邮件设置
+  mail:
+    #qq邮箱
+    #username: 2292279906@qq.com
+    #pop3授权码
+    #password: sahevtnioajgdicb
+    #host: smtp.qq.com
+    #网易163邮箱
+    username: 15119951776@163.com
+    #pop3授权码
+    password: RYULEFZZUVCCREUX
+    host: smtp.163.com
+    #安全验证
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enabled: true
+    default-encoding: utf-8
+logging:
+  level:
+    com.example.image.mapper: debug  #com.example.spring_client.dao_mapper是接口所在位置
+
+additional-paths: src/main/java  #开启实时热部署的重启目录
+freemarker:
+  cache: false                   #页面不加载缓存，加载即生效
+
+server:
+  port: 8080
+  #这个设置是大小不限制，不然传输文件最多2M
+  tomcat:
+    max-http-form-post-size: -1
+
+    #servlet:
+  #context-path: /li    #修改虚拟目录，原来是8080，现在是8080/li
+  #mybatis相关配置
+
+mybatis:
+  type-aliases-package: com.example.image.entity  #实体类所在的包
+  configuration:
+    map-underscore-to-camel-case: true    #开启驼峰命名
+  mapper-locations: classpath:mappers/*.xml  #映射xml文件，建议写在resources目录下
+  #分页集成插件
+pagehelper:
+#  增加dialect属性，使用时必须指定该属性，可选值为oracle,mysql,mariadb,sqlite,hsqldb,postgresql,没有默认值，必须指定该属性。
+  helperDialect: mysql
+#  增加reasonable属性，默认值为false，使用默认值时不需要增加该配置，需要设为true时，需要配置该参数
+  reasonable: true
+#  这是个自动分页的配置，依据的是入参，如果参数中有pageNum，pageSize分页参数，则会自动分页
+#  参数名称默认取：pageNum，pageSize,参数名称也可以自定义但是需要加配置
+  supportMethodsArguments: true
+#  如果POJO或者Map中发现了countSql属性，就会作为count参数使用。
+  params: count=countSql
+file:
+  upload:
+    #  自定义上传文件路径
+    dir: d:test
+#    禁止上传的文件类型
+    disableTypes: dll,exe
+
+#shiro
+#shiro:
+#  enabled: true   #开启shiro配置
+#  web:
+#    enabled: true   #开启shiroweb配置
+#  loginUrl: /login   #登录地址，默认/login.jsp
+#  successUrl: /forum   #默认登录地址
+#  unauthorizedUrl: /unauthorized   #未授权跳转地址
+#  sessionManager:
+#    sessionIdUrlRewritingEnabled: true  #允许url参数进行会话跟踪
+#    sessionIdCookiesEnabled: true   #是否允许cookie会话实现会话跟踪
+

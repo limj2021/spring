@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--对应接口，自动扫描-->
+<mapper namespace="com.example.image.mapper.ImageMapper" >
+    <!--parameterType与resultType区别
+parameterType完成输入映射，就是调用命令的意思，可能改变数据库数据
+resultType完成输出映射，就是返回结果的意思，不对数据库发生改变
+-->
+    <!--结果集映射-->
+    <!-- column是数据库中表的列名  property是对应实体类的属性名 -->
+
+    <resultMap id="mapResult" type="Image">
+        <result column="Iid" property="Iid"></result>
+        <result column="photo" property="photo"></result>
+        <result column="imageString" property="imageString"></result>
+        <result column="imagebase64" property="imagebase64"></result>
+    </resultMap>
+
+    <!--增加-->
+    <insert id="addimage" parameterType="Image">
+        insert into spring.imagemysql(image)values (#{image});
+    </insert>
+
+    <!--增加-->
+    <insert id="addimageString" parameterType="Image">
+        insert into spring.imagemysql(imageString)values (#{imageString});
+    </insert>
+
+<!--    &lt;!&ndash;增加&ndash;&gt;-->
+<!--    <insert id="addimagepath" parameterType="Image">-->
+<!--        insert into spring.imagemysql(imageString)values (#{imageString});-->
+<!--    </insert>-->
+
+    <!--增加-->
+    <insert id="addimagebase64" parameterType="Image">
+        insert into spring.imagemysql(imagebase64)values (#{imagebase64});
+    </insert>
+
+    <!--查询全部-->
+    <select id="queimage" resultMap="imageall">
+        select * from spring.imagemysql where iid = #{iid}
+    </select>
+    <resultMap id="imageall" type="Image">
+        <result property="Iid" column="Iid"/>
+        <result property="image" column="image" jdbcType="BLOB"/>
+        <result property="imageString" column="imageString"/>
+        <result property="imagebase64" column="imagebase64"/>
+    </resultMap>
+
+
+    <!--查询全部-->
+    <select id="queimageString" resultType="String">
+        select * from spring.imagemysql where iid = #{iid}
+    </select>
+
+    <!--查询全部-->
+    <select id="queimageBase64" resultType="String">
+        select * from spring.imagemysql where iid = #{iid}
+    </select>
+
+</mapper>

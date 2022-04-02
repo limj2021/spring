@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<input type="button" value="添加数据" onclick="addUser()"><br>
+<input type="button" value="删除数据" onclick="deleteUser()">
+
+<script>
+    function addUser(){
+        $.ajax({
+            type: "POST",
+            url: "http://localhost:8080/user",
+            data:JSON.stringify({
+                "username":"admin",
+                "password":"123456",
+                "email":"635498720",
+            }),
+            dataType: "JSON",
+            contentType: "application/json;charset=UTF-8",
+            success: function(msg) {
+            }
+        })
+    }
+    function deleteUser(){
+        $.ajax({
+            type:"detele",
+            url:"http://localhost:8080/users/5",
+            success: function(msg) {
+            }
+        })
+    }
+
+
+</script>
+
+</body>
+</html>

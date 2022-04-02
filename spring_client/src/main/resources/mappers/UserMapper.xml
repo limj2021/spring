@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--对应接口，自动扫描-->
+<mapper namespace="com.example.spring_client.dao_mapper.UserMapper" >
+    <!--parameterType与resultType区别
+parameterType完成输入映射，就是调用命令的意思，可能改变数据库数据
+resultType完成输出映射，就是返回结果的意思，不对数据库发生改变
+-->
+    <!--可以进行字段映射
+id是方法名
+property：要将关联查询的用户信息映射到Orders中哪个属性
+column：指定唯 一标识用户信息的列,数据库信息
+-->
+    <!--结果集映射-->
+    <!-- column是数据库中表的列名  property是对应实体类的属性名 -->
+    <resultMap id="UserResult" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+    </resultMap>
+
+    <!--增加-->
+    <insert id="userAdd" parameterType="User">
+        insert into spring.user(userId,username,password) values (#{userId},#{username},#{password});
+    </insert>
+
+    <!--删除-->
+    <delete id="userDelete" parameterType="String">
+        delete from spring.user where username = #{username}
+    </delete>
+
+    <delete id="useridDelete" parameterType="String">
+        delete from spring.user where userId = #{userId}
+    </delete>
+
+    <!--修改-->
+    <update id="userUpUpdate" parameterType="String">
+        update spring.user_relation set authorityId='001' where userId = #{userId}
+    </update>
+
+    <!--修改-->
+    <update id="userDownUpdate" parameterType="String">
+        update spring.user_relation set authorityId='002' where userId = #{userId}
+    </update>
+
+    <!--修改-->
+    <update id="userUpdate" parameterType="String">
+        update spring.user set password=#{password} where username = #{username}
+    </update>
+
+    <!--查询全部-->
+    <select id="userQueAll" resultType="User">
+        select * from spring.user
+    </select>
+
+    <!--查询-->
+    <select id="userQueOne" parameterType="String"  resultType="User">
+        SELECT * From spring.user where username = #{username}
+    </select>
+
+
+    <!--连表查询-按照结果嵌套查询-->
+<!--    两表联查-只能查询到需要的数据，其他的数据不显示-->
+<!--    查询用户和权限-->
+    <select id="userAuthor" resultMap="UserAuthor">
+        select u.userId,u.username,u.`password`,a.authorityId,a.authorityName,a.roleName
+        from user u,authority a,user_relation ur
+        where u.userId=ur.userId
+          and a.authorityId=ur.authorityId
+    </select>
+    <resultMap id="UserAuthor" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <association property="authority" javaType="Authority">
+            <result column="authorityId" property="authorityId"></result>
+            <result column="authorityName" property="authorityName"></result>
+            <result column="roleName" property="roleName"></result>
+        </association>
+    </resultMap>
+
+<!--    三表联查-非嵌套式-->
+    <select id="userAuthorThree" parameterType="String" resultMap="userAuthorMap">
+            select u.username,u.`password`,a.authorityName,ur.userId,ur.authorityId
+            from user u,authority a,user_relation ur
+            where u.userId=ur.userId
+            and a.authorityId=ur.authorityId
+    </select>
+    <resultMap id="userAuthorMap" type="User">
+        <!--property表示com.domain.Student的字段,coloum为表中的字段，进行配置映射-->
+        <!--主键字段-->
+        <id column="userId" property="userId"></id>
+        <!--非主键字段-->
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="beiyong1" property="beiyong1"></result>
+        <result column="beiyong2" property="beiyong2"></result>
+        <result column="beiyong3" property="beiyong3"></result>
+        <association property="userRelation" javaType="User_relation">
+            <result column="urId" property="urId"></result>
+            <result column="userId" property="userId"></result>
+            <result column="authorityId" property="authorityId"></result>
+            <result column="uInfoId" property="uInfoId"></result>
+        </association>
+        <association property="authority" javaType="Authority">
+            <result column="authorityId" property="authorityId"></result>
+            <result column="authorityName" property="authorityName"></result>
+            <result column="roleName" property="roleName"></result>
+        </association>
+    </resultMap>
+
+<!--    用户权限表，查单条数据-->
+    <select id="userAuthorOne" parameterType="String" resultMap="UserAuthorO">
+        select u.username,u.`password`,a.authorityName
+        from user u,authority a,user_relation ur
+        where u.userId=ur.userId
+          and a.authorityId=ur.authorityId
+          and u.username = #{username}
+    </select>
+    <resultMap id="UserAuthorO" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <association property="authority" javaType="Authority">
+            <result column="authorityId" property="authorityId"></result>
+            <result column="authorityName" property="authorityName"></result>
+            <result column="roleName" property="roleName"></result>
+        </association>
+    </resultMap>
+
+
+<!--    用户信息两表联查-->
+    <select id="userInfo" resultMap="uUserInfo">
+        select u.userId,u.username,u.`password`,uf.uInfoId,uf.email,uf.nackName,uf.phoneNumber
+        from user u,userinfo uf,user_relation ur
+        where u.userId=ur.userId
+          and uf.uInfoId=ur.uInfoId
+    </select>
+    <resultMap id="uUserInfo" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <association property="userInfo" javaType="UserInfo">
+            <result column="uInfoId" property="uInfoId"></result>
+            <result column="email" property="email"></result>
+            <result column="phoneNumber" property="phoneNumber"></result>
+            <result column="nackName" property="nackName"></result>
+        </association>
+    </resultMap>
+
+    <!--    用户信息三表联查-->
+    <select id="userInfoThree" parameterType="String" resultMap="uUserInfoMap">
+        select u.username,u.`password`,uf.email,uf.nackName,uf.phoneNumber
+        from user u,userinfo uf,user_relation ur
+        where u.userId=ur.userId
+          and uf.uInfoId=ur.uInfoId
+    </select>
+    <resultMap id="uUserInfoMap" type="User">
+        <!--property表示com.domain.Student的字段,coloum为表中的字段，进行配置映射-->
+        <!--主键字段-->
+        <id column="userId" property="userId"></id>
+        <!--非主键字段-->
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <association property="userRelation" javaType="User_relation">
+            <result column="urId" property="urId"></result>
+            <result column="userId" property="userId"></result>
+            <result column="authorityId" property="authorityId"></result>
+            <result column="uInfoId" property="uInfoId"></result>
+            <association property="userInfo" javaType="UserInfo">
+                <result column="uInfoId" property="uInfoId"></result>
+                <result column="email" property="email"></result>
+                <result column="nackName" property="nackName"></result>
+                <result column="phoneNumber" property="phoneNumber"></result>
+            </association>
+        </association>
+    </resultMap>
+
+    <!--    用户权限表，查单条数据-->
+    <select id="userInfoOne" parameterType="String" resultMap="userInfoO">
+        select u.username,u.`password`,uf.email,uf.nackName,uf.phoneNumber
+        from user u,userinfo uf,user_relation ur
+        where u.userId=ur.userId
+          and uf.uInfoId=ur.uInfoId
+          and u.username = #{username}
+    </select>
+    <resultMap id="userInfoO" type="User">
+        <result column="userId" property="userId"></result>
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <association property="userInfo" javaType="UserInfo">
+            <result column="uInfoId" property="uInfoId"></result>
+            <result column="email" property="email"></result>
+            <result column="phoneNumber" property="phoneNumber"></result>
+            <result column="nackName" property="nackName"></result>
+        </association>
+    </resultMap>
+
+
+<!--    三表联查-全部-->
+    <select id="userAuthorInfo" parameterType="String" resultMap="userAuthorInfoAll">
+        select u.username,u.`password`,a.authorityName,ur.userId,ur.authorityId,uf.email,uf.nackName,uf.phoneNumber
+        from user u,authority a,user_relation ur,userinfo uf
+        where u.userId=ur.userId
+          and uf.uInfoId=ur.uInfoId
+          and a.authorityId=ur.authorityId
+    </select>
+    <resultMap id="userAuthorInfoAll" type="User">
+        <!--property表示com.domain.Student的字段,coloum为表中的字段，进行配置映射-->
+        <!--主键字段-->
+        <id column="userId" property="userId"></id>
+        <!--非主键字段-->
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="beiyong1" property="beiyong1"></result>
+        <result column="beiyong2" property="beiyong2"></result>
+        <result column="beiyong3" property="beiyong3"></result>
+        <association property="userInfo" javaType="UserInfo">
+            <result column="uInfoId" property="uInfoId"></result>
+            <result column="email" property="email"></result>
+            <result column="phoneNumber" property="phoneNumber"></result>
+            <result column="nackName" property="nackName"></result>
+        </association>
+        <association property="authority" javaType="Authority">
+            <result column="authorityId" property="authorityId"></result>
+            <result column="authorityName" property="authorityName"></result>
+            <result column="roleName" property="roleName"></result>
+        </association>
+    </resultMap>
+
+    <!--    三表联查-一条数据-->
+    <select id="userAuthorInfoO" parameterType="String" resultMap="userAuthorInfoO">
+        select u.username,u.`password`,a.authorityName,ur.userId,ur.authorityId,uf.uInfoId,uf.email,uf.nackName,uf.phoneNumber
+        from user u,authority a,user_relation ur,userinfo uf
+        where u.userId=ur.userId
+          and uf.uInfoId=ur.uInfoId
+          and a.authorityId=ur.authorityId
+          and u.username = #{username}
+    </select>
+    <resultMap id="userAuthorInfoO" type="User">
+        <!--property表示com.domain.Student的字段,coloum为表中的字段，进行配置映射-->
+        <!--主键字段-->
+        <id column="userId" property="userId"></id>
+        <!--非主键字段-->
+        <result column="username" property="username"></result>
+        <result column="password" property="password"></result>
+        <result column="beiyong1" property="beiyong1"></result>
+        <result column="beiyong2" property="beiyong2"></result>
+        <result column="beiyong3" property="beiyong3"></result>
+        <association property="userInfo" javaType="UserInfo">
+            <result column="uInfoId" property="uInfoId"></result>
+            <result column="email" property="email"></result>
+            <result column="phoneNumber" property="phoneNumber"></result>
+            <result column="nackName" property="nackName"></result>
+        </association>
+        <association property="authority" javaType="Authority">
+            <result column="authorityId" property="authorityId"></result>
+            <result column="authorityName" property="authorityName"></result>
+            <result column="roleName" property="roleName"></result>
+        </association>
+    </resultMap>
+
+</mapper>

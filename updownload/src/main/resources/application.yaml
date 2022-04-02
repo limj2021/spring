@@ -1,0 +1,19 @@
+spring:
+  servlet:
+    multipart:
+      max-request-size: 10MB
+      max-file-size: 10MB
+  thymeleaf:
+    servlet:
+      content-type: text/html
+      cache: false
+      mode: LEGACYHTML5
+  mvc:
+    view:
+      suffix: .html
+      prefix: classpath:/
+#      prefix: classpath:/templates/
+
+
+server:
+  port: 8080

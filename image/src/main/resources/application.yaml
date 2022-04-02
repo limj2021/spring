@@ -1,0 +1,17 @@
+spring:
+  profiles:
+    active: dev   #端口号改变为8080
+  #邮件设置
+  mail:
+#    #qq邮箱
+#    #username: 2292279906@qq.com
+#    #pop3授权码
+#    #password: sahevtnioajgdicb
+#    #host: smtp.qq.com
+    #网易163邮箱
+    username: 15119951776@163.com
+    #pop3授权码
+    password: RYULEFZZUVCCREUX
+    host: smtp.163.com
+
+

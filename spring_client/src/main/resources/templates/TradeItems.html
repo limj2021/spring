@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>物品交易</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/jquery-3.6.0.js"></script>
+</head>
+<body>
+<a th:href="@{/skip/forum}"  class="list-group-item list-group-item-action">
+    回到论坛
+</a>
+<div class="bg-light p-1 ">
+    <h2 class="offset-1">用户：<span sec:authentication="name"></span> -这里是物品交易</h2>
+    <!--container 很重要-->
+    <div style="overflow:scroll; width:100%; height:500px;" class="container border bg-dark text-dark text-white">
+<!--        改用表单,用表单失败，改用列表组 -开启列表循环-->
+        <div th:each="list:${tradeItemsAll}" class="list-group bg-light text-dark mt-4" style="width:100%;">
+            <div class="list-group-item list-group-item-action">
+                <div class="row m-2 text-success">
+                    <div class="col-2">
+                        <div>
+                            编号:<span th:text="${list.getTiid()}"/>
+                        </div>
+                        <div>
+                            物品图片：<img alt="image" th:src="@{/trade/getwupingimage(fileimage=${list.getTiid()})}" th:style="'width:100px; height:100px'">
+                        </div>
+                    </div>
+                    <div class="col-4 offset-2">
+                        <div>
+                            发布人:<span th:text="${list.getSeller()}"/>
+                        </div>
+                        <div>
+                            标题:<span th:text="${list.getTitle()}"/>
+                        </div>
+                    </div>
+                    <div class="col-4">
+                        <div>
+                            时间:<span style="font-size:12px" th:text="${list.getTime()}"/>
+                        </div>
+                        <div>
+                            物品定价:<span th:text="${list.getMoney()}"/>
+                        </div>
+                        <div>
+                            <a th:href="@{/trade/geterweimaimage(fileimage=${list.getTiid()})}">付款码</a>
+                        </div>
+                        <div class="row m-2">
+                            <div class="col-5 offset-2 text-danger" style="font-size:12px">
+                                <!--                        贩卖中-->
+                                <span th:if="${list.getState()}==1">
+                                    <a th:href="@{/trade/update(tiid=${list.getTiid()})}" role="button" class="btn btn-outline-success btn-sm" th:text="${list.getIntformation()}"></a>
+                                </span>
+                                <!--                        我发布的，还没有买家-->
+                                <span th:if="${list.getState()}==2">
+                                                <a role="button" class="btn btn-outline-warning btn-sm" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                                <!--                        我的物品在交易中-->
+                                <span th:if="${list.getState()}==3">
+                                                <a role="button" class="btn btn-outline-secondary btn-sm" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                                <!--                        我的购物车中-->
+                                <span th:if="${list.getState()}==4">
+                                                <a th:href="@{/trade/updateshop(tiid=${list.getTiid()})}" role="button" class="btn btn-outline-primary btn-sm" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                                <!--                        正在被别人交易-->
+                                <span th:if="${list.getState()}==5">
+                                                <a th:href="@{/trade/update(tiid=${list.getTiid()})}" role="button" class="btn btn-outline-info btn-sm" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                                <!--                        已完成-->
+                                <span th:if="${list.getState()}==6">
+                                                <a role="button" class="btn btn-outline-dark btn-sm" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                                <!--                        删除任务-->
+                                <span th:if="${list.getState()}==7">
+                                                <a th:href="@{/trade/delete(tiid=${list.getTiid()})}" role="button" class="btn btn-outline-danger btn-sm" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                                <!--                        异常情况-->
+                                <span th:if="${list.getState()}==8">
+                                                <a role="button" class="btn btn-outline-light btn-sm text-dark" th:text="${list.getIntformation()}"></a>
+                                            </span>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+<!--分页器-->
+<!--<div class="container mt-3">-->
+<!--    <ul class="pagination justify-content-center">-->
+<!--        <li class="page-item"><a th:href="@{/forum/myusertaskall(page=1)}" class="page-link">首页</a></li>-->
+<!--        <span th:if="${mytasklist.getPageNum()}!=1">-->
+<!--                    <li class="page-item"><a th:href="@{/forum/myusertaskall(page=${mytasklist.getPageNum()-1})}" class="page-link">上一页</a></li>-->
+<!--                </span>-->
+<!--        <li class="page-item active"><a th:text="'第'+(${mytasklist.getPageNum()})+'页'" class="page-link">&lt;!&ndash;当前页&ndash;&gt;</a></li>-->
+<!--        &lt;!&ndash;                <span th:if="${mytasklist.getPageNum()}!=mytasklist.getTotalPages()">&ndash;&gt;-->
+<!--        <li class="page-item"><a th:href="@{/forum/myusertaskall(page=${mytasklist.getPageNum()+1})}" class="page-link">下一页</a></li>-->
+<!--        &lt;!&ndash;                </span>&ndash;&gt;-->
+<!--        <li class="page-item"><a th:href="@{/forum/myusertaskall(page=${mytasklist.getTotalPages()})}" class="page-link">尾页</a></li>-->
+
+<!--        <li class="page-item"><a th:text="'共'+(${mytasklist.getTotalPages()})+'页'"  class="page-link"></a></li>-->
+<!--    </ul>-->
+<!--</div>-->
+
+<div class="row">
+    <div class="col-8 offset-2">
+        <form th:action="@{/trade/add}" method="post" enctype ="multipart/form-data">
+            <div class="p-1">
+                <div class="m-2">
+                    物品描述<input name="title" style="width: 300px" type="text">
+                </div>
+                <div class="m-2">
+                    上传物品图片<input type="file" name="fileWuPing">
+                </div>
+                <div class="m-2">
+                    上传收款二维码<input type="file" name="fileErWeiMa">
+                </div>
+                <div class="m-2">
+                    物品定价：<input name="money" type="text">
+                </div>
+            </div>
+            <input class="btn btn-primary" type="submit" value="提交" style="float: left">
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<head>
+    <title>测试页面</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/jquery-3.6.0.js"></script>
+</head>
+<body>
+<a th:href="@{/skip/forum}"  class="list-group-item list-group-item-action">
+    回到论坛
+</a>
+<h1>你好，登录用户：<span sec:authentication="name"></span></h1>
+<div>
+    <div style="overflow:scroll; width:100%; height:400px;" class="container border bg-dark text-dark text-white">
+        <!--改用表单,用表单失败，改用列表组-->
+        <!---开启列表循环-->
+        <div th:each="list:${forumlist}" class="list-group bg-light text-dark mt-4" style="width:100%;">
+            <div class="list-group-item list-group-item-action">
+                <div class="row m-2 text-success">
+                    <div class="col-2">
+                        编号:<span th:text="${list.getId()}"/>
+                    </div>
+                    <div class="col-4 offset-2">
+                        发布人:<span th:text="${list.getPublisher()}"/>
+                    </div>
+                    <div class="col-4">
+                        <!--时间:-->
+                        <span style="font-size:12px" th:text="${list.getTime()}"/>
+                    </div>
+                </div>
+                <div class="row m-2 text-muted">
+                    <div class="col-8 offset-2">
+                        标题:<span th:text="${list.getTitle()}"/>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-10 offset-1">
+                        内容:<span th:text="${list.getContent()}"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-4" style="font-size:12px">
+                        工资<span style="font-size:12px" th:text="${list.getSalary()}"/>
+                    </div>
+                    <div class="col-4" style="font-size:12px">
+                        工作时长：朝<span th:text="${list.getWorkingOneHours()}"/>
+                        — 晚<span style="font-size:12px" th:text="${list.getWorkingTwoHours()}"/>
+                    </div>
+                    <div class="col-4" style="font-size:12px">
+                        工作地点<span style="font-size:12px" th:text="${list.getAddress()}"/>
+                    </div>
+                </div>
+                <div class="row m-2">
+                    <div class="col-5 offset-7 text-info" style="font-size:12px">
+                        联系电话<span th:text="${list.getPhoneNumber()}"/>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--分页器-->
+    <div class="container mt-3">
+        <ul class="pagination justify-content-center">
+            <li class="page-item"><a th:href="@{/forum/findPage(request=1)}" class="page-link">首页</a></li>
+            <li class="page-item"><a th:href="@{/forum/findPage(request=${Pages.getPageNum()-1})}" class="page-link">上一页</a></li>
+            <li class="page-item active"><a th:text="'第'+(${Pages.getPageNum()})+'页'" class="page-link"><!--当前页--></a></li>
+            <li class="page-item"><a th:href="@{/forum/findPage(request=${Pages.getPageNum()+1})}" class="page-link">下一页</a></li>
+            <li class="page-item"><a th:href="@{/forum/findPage(request=${Pages.getTotalPages()})}" class="page-link">尾页</a></li>
+            <li class="page-item"><a th:text="'共'+(${Pages.getTotalPages()})+'页'"  class="page-link"></a></li>
+        </ul>
+    </div>
+
+</div>
+
+
+
+</body>
+</html>

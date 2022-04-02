@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <!-- 必须的 meta 标签 -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>这是首页</title>
+    <!--使用了thymeleaf模板-->
+    <!-- Bootstrap 的 js 文件 -->
+    <script th:src="@{/js/bootstrap.bundle.js}"></script>
+    <!-- Bootstrap 的 CSS 文件 -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.css}">
+    <!--导入js-->
+    <script th:src="@{/js/jquery-3.6.0.js}"></script>
+</head>
+<body>
+
+<div class="container p-4 bg-dark text-white">
+    <h2>注册中心</h2>
+    <div class="container col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-10 offset-sm-1 bg-light text-dark p-3">
+        <div class="col-10 offset-1">
+            <form th:action="@{/user/register}" method="post">
+                <h3>兼职系统用户注册</h3>
+                <P></P>
+                <p style="color: #ff0000" th:text="${error}" th:if="${not #strings.isEmpty(error)}"></p>
+                <!--邮箱-->
+                <div class="row mt-2 mb-2">
+                    <div class="col-8">
+                        <label style="width:70px">邮箱</label>
+                        <input required="" class="input-material" type="text" id="registerEmail" name="registerEmail" placeholder="邮箱">
+                    </div>
+                    <div class="col-4">
+                        <span class="" style="color:#f0f0f0;display:none;" id="emailTip">
+                            请输入正确的邮箱格式
+                        </span>
+                    </div>
+                </div>
+
+                <!--手机-->
+                <div class="row mt-2 mb-2">
+                    <div class="col-8">
+                        <label style="width:70px">手机号</label>
+                        <input class="input-material" maxlength="11" oninput = "value=value.replace(/[^\d]/g,'')"  placeholder="手机号" id="phoneNumber" name="registerPhone" type="text">
+                    </div>
+                    <div class="col-4">
+                        <span class="" style="color:#f0f0f0;display:none;" id="phoneTip">
+                            请输入有效的手机号码
+                        </span>
+                    </div>
+                </div>
+
+                <!--昵称-->
+                <div class="row mt-2 mb-2">
+                    <div class="col-8">
+                        <label style="width:70px">昵称</label>
+                        <input required="" class="input-material" type="text" name="registerNackName" placeholder="昵称">
+                    </div>
+                    <div class="col-4">
+                        <!--没有提示-->
+                    </div>
+                </div>
+                <!--昵称-->
+                <div class="row mt-2 mb-2">
+                    <div class="col-8">
+                        <label style="width:70px">用户名</label>
+                        <input required="" class="input-material" type="text" id="registerUserName" name="registerUserName" placeholder="用户">
+                    </div>
+                    <div class="col-4">
+                        <span class="" style="color:#f0f0f0;display:none;" id="usernameTip">
+                            请输入
+                        </span>
+                    </div>
+                </div>
+                <!--密码-->
+                <div class="row mt-2 mb-2">
+                    <div class="col-8">
+                        <label style="width:70px">密码</label>
+                        <input required="" class="input-material" type="password" id="registerPassword" name="registerPassword" placeholder="密码">
+                    </div>
+                    <div class="col-4">
+                        <span class="" style="color:#f0f0f0;display:none;" id="passwordTip">
+                            密码输入中
+                        </span>
+                    </div>
+                </div>
+
+                <!--确认密码-->
+                <div class="row mt-2 mb-2">
+                    <div class="col-8">
+                        <label style="width:70px">确认密码</label>
+                        <input required="" class="input-material" type="password" id="registerAgainPassword" name="registerAgainPassword" placeholder="确认密码">
+                    </div>
+                    <div class="col-4">
+                        <span class="" style="color:#f0f0f0;display:none;" id="passwordAgainTip">
+                            请再次输入密码
+                        </span>
+                    </div>
+                </div>
+
+                <button type="submit" name="registerSubmit" class="btn btn-primary col-lg-8 offset-lg-2 col-md-8 offset-md-2 col-sm-10 offset-sm-1 mt-2 mb-2">注册</button>
+            </form>
+        <p style="font-size: 12px">注册即表示您同意并愿意遵守
+            <a style="font-size: 12px">用户协议</a> 与
+            <a style="font-size: 12px">隐私政策</a>
+        </p>
+        <div>
+            <!--用css调整了左边距,设置了内上边距-->
+            <img style="margin-left: 20px" class="md-3" th:src="@{/img/index/WeChat.svg}"  alt="Bootstrap" width="32" height="32">
+            <img style="margin-left: 10px" th:src="@{/img/index/QQ.svg}" alt="Bootstrap" width="32" height="32">
+            <img style="margin-left: 10px" th:src="@{/img/index/github.svg}" alt="Bootstrap" width="32" height="32">
+        </div>
+        <div><span style="font-size: 12px">已有账户，</span>
+            <a style="font-size: 12px" class="btn btn-sm" th:href="@{/skip/login}">立即登录</a>
+        </div>
+        </div>
+    </div>
+</div>
+<script>
+    //网页加载完毕后立刻执行的操作
+    window.onload = function() {
+
+        //增加邮箱正则验证，类型为onblur，失去焦点时，触发事件
+        //获取邮箱的值
+        var registerEmail = document.getElementById("registerEmail");
+        //获得邮箱提示信息的值
+        var emailTip = document.getElementById("emailTip");
+        //邮箱正则表达式
+        var preg2 = /^([a-zA-Z]|[0-9])(\w|\-)+@[a-zA-Z0-9]+\.([a-zA-Z]{2,4})$/
+        //获得焦点时，显示
+        registerEmail.onfocus = function() {
+            emailTip.style.display = "block";
+            emailTip.style.color="#ff0000";
+        }
+        //失去焦点时，邮箱验证
+        registerEmail.onblur = function() {
+            //获取控件的value值
+            var emailVal = this.value;
+            //当电话不是11位或者不是数字时，改变数值phoneVal.length == 11 && isNaN(phoneVal) == false&&
+            if (preg2.test(emailVal)) {
+                emailTip.innerHTML = "输入正确";
+                emailTip.style.display = "none";//隐藏
+            } else if(emailVal.length==0){
+                emailTip.innerHTML = "请输入邮箱信息";
+                emailTip.style.display = "none";//隐藏
+            } else {
+                emailTip.innerHTML = "输入的邮箱账号不正确";
+            }
+        }
+
+
+        //增加手机正则验证，类型为onblur，失去焦点时，触发事件
+        //获取电话的值
+        var phoneNumber = document.getElementById("phoneNumber");
+        //获得提示信息的值
+        var phoneTip = document.getElementById("phoneTip");
+        //手机号正则表达式
+        var preg1 = /^1[3456789][0-9]{9}$/
+        //获得焦点时，显示
+        phoneNumber.onfocus = function() {
+            phoneTip.style.display = "block";
+            phoneTip.style.color="#ff0000";
+        }
+        //失去焦点时，手机验证
+        phoneNumber.onblur = function() {
+            var phoneVal = this.value;
+            //当电话不是11位或者不是数字时，改变数值phoneVal.length == 11 && isNaN(phoneVal) == false&&
+            if (preg1.test(phoneVal)) {
+                phoneTip.innerHTML = "输入正确";
+                phoneTip.style.display = "none";//隐藏
+            } else if(phoneVal.length==0){
+                phoneTip.innerHTML = "请输入电话号码";
+                phoneTip.style.display = "none";//隐藏
+            } else {
+                phoneTip.innerHTML = "输入的手机号不正确";
+            }
+        }
+
+        //增加用户验证，类型为onblur，失去焦点时，触发事件\
+        var UserName = document.getElementById("registerUserName");
+        //获得提示信息的值
+        var usernameTip = document.getElementById("usernameTip");
+        //手机号正则表达式
+        var preg1 = /^1[3456789][0-9]{9}$/
+        //获得焦点时，显示
+        UserName.onfocus = function() {
+            usernameTip.style.display = "block";
+            usernameTip.style.color="#ff0000";
+        }
+        //失去焦点时，手机验证
+        UserName.onblur = function() {
+            var usernameVal = this.value;
+            //当电话不是11位或者不是数字时，改变数值phoneVal.length == 11 && isNaN(phoneVal) == false&&
+            if(usernameVal.length==0){
+                usernameTip.innerHTML = "请输入";
+                usernameTip.style.display = "none";//隐藏
+            } else {
+                usernameTip.innerHTML = "是否确认使用此用户名";
+                usernameTip.style.display = "none";//隐藏
+            }
+        }
+
+
+        //密码验证
+        //获取密码的值
+        var registerPassword = document.getElementById("registerPassword");
+        //获取再次输入密码的值
+        var registerAgainPassword = document.getElementById("registerAgainPassword");
+        //获取再次输入密码的值
+        var passTip = document.getElementById("passwordTip");
+        //获取再次输入密码的值
+        var passAgainTip = document.getElementById("passwordAgainTip");
+
+        //获得焦点时，显示
+        registerPassword.onfocus = function() {
+            var passVal = this.value
+            passTip.style.display = "block";
+            passTip.style.color="#ff0000";
+            if(passVal.length!=0){
+                passTip.innerHTML = "密码输入中";
+            }else{
+                passTip.innerHTML = "没有输入密码";
+            }
+        }
+        //失去焦点时，密码验证
+        registerPassword.onblur = function() {
+            var passVal = this.value;
+            if(passVal.length==0){
+                passTip.innerHTML = "没有输入密码";
+                passTip.style.display = "none";//隐藏
+            } else {
+                passTip.innerHTML = "密码输入中";
+                passTip.style.display = "none";//隐藏
+            }
+        }
+
+        //获得焦点时，显示
+        registerAgainPassword.onfocus = function() {
+            passAgainTip.style.display = "block";
+            passAgainTip.style.color="#ff0000";
+        }
+        //失去焦点时，密码验证
+        registerAgainPassword.onblur = function() {
+            //获取registerAgainPassword的值
+            var passAgainVal = this.value;
+            //大坑呀，document.getElementById("registerPassword")是控件比较，不是值比较
+            //获取registerPassword的值
+            var passvalue=document.getElementById("registerPassword").value;
+
+            //打印比较，控制台查看
+            console.log(passAgainVal)
+            console.log(registerPassword)
+            console.log(passvalue)
+            //密码和再次输入的密码一致
+            console.log(passAgainVal==passvalue);
+            console.log(Object.is(passAgainVal,passvalue));
+            console.log(passAgainVal===passvalue);
+
+            if (Object.is(passAgainVal,passvalue)) {
+                passAgainTip.innerHTML = "输入正确";
+                passAgainTip.style.display = "none";//隐藏
+            } else if(passAgainVal.length==0){
+                passAgainTip.innerHTML = "没有输入密码";
+            } else {
+                passAgainTip.innerHTML = "输入的密码不一致";
+            }
+        }
+    }
+</script>
+</body>
+</html>
